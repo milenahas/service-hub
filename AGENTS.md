@@ -2,7 +2,7 @@
 
 Central de chamados do suporte de TI. Clientes cadastram chamados quando algo quebra. Consultores atendem a fila, respondem e registram o que fizeram. Gestores acompanham a equipe, redistribuem trabalho e enxergam o que está perto de estourar o prazo.
 
-É um sistema só. A área de chamados entra em produção no começo do ano que vem e será mantida por anos. Escolha versões de biblioteca com suporte nesse horizonte. O que não estiver definido aqui é uma decisão de produto: resolva pelo menor comportamento que sirva a pessoa que está na tela.
+O que não estiver definido aqui é decisão de produto: resolva pelo menor comportamento que sirva a quem está na tela.
 
 ## Quem usa
 

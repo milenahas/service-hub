@@ -1,75 +1,72 @@
-# React + TypeScript + Vite
+# Service Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Central de chamados do suporte de TI. Clientes abrem chamados quando algo quebra; consultores atendem a fila, respondem e registram o que fizeram; gestores acompanham a equipe, redistribuem trabalho e enxergam o que está perto de estourar o prazo.
 
-Currently, two official plugins are available:
+Front em React, TypeScript e Vite. Em desenvolvimento, um snapshot de tenant substitui a API; o relógio dos prazos é `meta.agora` nesse snapshot, não o relógio da máquina. Com a API em uso, os dados vêm dela e as mudanças chegam por WebSocket.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Quem usa
 
-## React Compiler
+Três rotinas, em telas separadas — não uma única interface com ramos por perfil.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Perfil | Rotina |
+| --- | --- |
+| **Cliente** | Poucos chamados por ano. Quer saber se alguém pegou o chamado, quando terá resposta e o que aconteceu, sem reler tudo. Não vê categoria, grupo nem prioridade interna. Anotação interna nunca aparece. |
+| **Consultor** | Dia na fila: chamados atribuídos e fila do grupo. Prioriza prazo, responde, anota para colegas, muda status. Precisa achar de imediato o que está prestes a estourar o SLA. |
+| **Gestor** | Olha a equipe, não a conversa: carga, ociosidade, SLA nas próximas horas, redistribuição. Abre a conversa sobretudo quando o cliente escalou. |
 
-## Expanding the ESLint configuration
+## O que a área permite
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Abrir um chamado.
+2. Encontrar um chamado e ver conversa, status, responsável e prazo.
+3. Pegar um chamado para atender.
+4. Trocar mensagens no chamado.
+5. Mudar o status com motivo registrado (chamado fechado pode reabrir).
+6. Acompanhar a situação de um grupo de consultores.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Mudanças feitas por outras pessoas devem aparecer na tela enquanto alguém usa o sistema.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Pré-requisitos
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js compatível com o projeto (use a versão LTS atual).
+- `npm`
 
+## Como rodar
+
+Na raiz do repositório:
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Abra o endereço que o Vite mostrar no terminal (em geral `http://localhost:5173`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Build de produção e pré-visualização:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run build
+npm run preview
 ```
+
+## Ver como cliente, consultor ou gestor
+
+Cada perfil tem sua própria rotina na interface. Depois de subir o app com `npm run dev`, escolha o perfil na tela inicial — isso abre a visão correspondente, sem misturar as três numa só tela.
+
+Até o seletor existir na interface, o repositório ainda expõe apenas o scaffold da aplicação; a documentação acima descreve o comportamento alvo da área de chamados.
+
+## Outros comandos
+
+| Comando | Uso |
+| --- | --- |
+| `npm run lint` | ESLint |
+| `npm test` | Testes (Vitest), uma execução |
+| `npm run test:watch` | Testes em modo observação |
+| `npm run build` | `tsc -b` e build do Vite |
+
+Antes de enviar alterações, rode `npm run lint`, `npm test` e `npm run build` e deixe tudo verde.
+
+## Para quem desenvolve
+
+Convenções de produto, dados, eventos e estilo de código estão em [AGENTS.md](./AGENTS.md).
+
+Stack principal: React, TypeScript, Vite, Vitest e React Testing Library (jsdom). Setup de testes em `src/setupTestes.ts`.
