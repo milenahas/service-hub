@@ -4,6 +4,8 @@ Central de chamados do suporte de TI. Clientes cadastram chamados quando algo qu
 
 O que não estiver definido aqui é decisão de produto: resolva pelo menor comportamento que sirva a quem está na tela.
 
+Não há API real nem autenticação de verdade neste front. O snapshot `src/dados/dados.json` substitui a API na carga inicial; mudanças em tempo real entram por **eventos simulados**, no mesmo formato descrito abaixo — como se chegassem por WebSocket.
+
 ## Quem usa
 
 Três rotinas. Não as misture numa tela só com ramos por perfil.
@@ -25,9 +27,21 @@ Três rotinas. Não as misture numa tela só com ramos por perfil.
 
 Enquanto a tela está aberta, outras pessoas abrem chamados, respondem e mudam status. A tela reflete isso.
 
+## Entrada (perfil)
+
+Há tela de login apenas para definir qual rotina abrir. Um único campo **usuário**, sem senha nem validação de credencial — é seletor de perfil com cara de login.
+
+| Valor digitado | Perfil |
+| --- | --- |
+| `consultor` | Consultor |
+| `gestor` | Gestor |
+| `cliente` | Cliente |
+
 ## Dados
 
-No sistema em produção os dados vêm de uma API e as mudanças chegam por WebSocket. Em desenvolvimento, um snapshot de um tenant faz o papel da API. O relógio dos prazos, nesse snapshot, é `meta.agora`. Não use o relógio da máquina: o snapshot está congelado nesse instante. Quando a API real substituir o snapshot, o relógio passa a ser o do servidor.
+Os dados iniciais vêm do snapshot em `src/dados/dados.json`. O relógio dos prazos é `meta.agora` nesse arquivo. Não use o relógio da máquina: o snapshot está congelado nesse instante.
+
+Enquanto alguém usa a fila ou o painel, chamados novos, mensagens e mudanças de status precisam **aparecer na tela** — como na regra da área. Aqui isso não vem de rede: o código precisa de um caminho explícito para **emitir eventos simulados** (mesmos `tipo` e `payload` da tabela abaixo) e aplicá-los ao estado já carregado. Exemplo que tem de ficar evidente na interface: um consultor no painel de chamados e, no meio do uso, chega um `chamado.aberto`. Idempotência na aplicação do evento continua valendo.
 
 Datas em UTC. Exiba no fuso de quem está vendo (`zoneinfo`). Há usuários em `pt-BR` e `pt-PT`.
 
@@ -50,6 +64,8 @@ Cada evento tem `id` (UUID), `tipo`, `ocorrido_em` (UTC) e `payload`. O mesmo ev
 
 Nesta ordem: fazer funcionar, deixar claro, só então deixar rápido.
 
+- Identificadores - Arquivos, funções, variáveis, tipos, em português. Pastas de features já existentes (`autenticacao`, `chamados`, `cliente`, `consultor`, `gestor`), também seguem com a nomenclatura em português.
+- Estrutura plana. Uma função, um objeto ou um array de um nível resolve. Hierarquia de classes só entra se o requisito existir.
 - O comportamento da tela vem primeiro. Teste prazo de SLA, anotação interna, evento repetido e reabertura de chamado fechado.
 - Nomeie pelo domínio: chamado, consultor, gestor, cliente, mensagem, prazo. Sem `data`, `item`, `handleClick` ou `utils` quando existe palavra do produto.
 - Uma regra de prazo ou de visibilidade mora num lugar só.
@@ -59,7 +75,6 @@ Nesta ordem: fazer funcionar, deixar claro, só então deixar rápido.
 - Um módulo, um assunto. Estado do chamado, evento e tela ficam separados.
 - Interface pequena. Sem componente que só repassa props.
 - Os três perfis não compartilham uma tela com `if`. Compartilhe prazo, mensagem ou linha de status. Se o compartilhado ganhar parâmetro por perfil, separe.
-- React, TypeScript, Vite, Vitest e React Testing Library já bastam. Biblioteca nova só quando o código direto dói num problema que já existe.
 - Testes de comportamento com Vitest e React Testing Library, no ambiente jsdom. Os matchers e a limpeza da tela ficam em `src/setupTestes.ts`.
 - O componente segue um pedaço dos dados. Props primeiro; estado só para o que muda. O resto se calcula. Estado no ancestral comum. Dados descem, evento sobe.
 
@@ -78,6 +93,7 @@ Rode `npm run lint`, `npm test` e `npm run build` antes de considerar uma altera
 
 ## Limites
 
+- Sem API real, sem WebSocket real e sem fluxo de autenticação (token, sessão, senha). Login só escolhe perfil pelo nome digitado.
 - Anotação interna não chega ao cliente por nenhum caminho.
 - Não crie camada, pasta de arquitetura ou abstração "para o futuro".
 - Não adicione dependência sem um problema presente que o código direto não resolve.

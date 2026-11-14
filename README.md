@@ -2,7 +2,7 @@
 
 Central de chamados do suporte de TI. Clientes abrem chamados quando algo quebra; consultores atendem a fila, respondem e registram o que fizeram; gestores acompanham a equipe, redistribuem trabalho e enxergam o que está perto de estourar o prazo.
 
-Front em React, TypeScript e Vite. Em desenvolvimento, um snapshot de tenant substitui a API; o relógio dos prazos é `meta.agora` nesse snapshot, não o relógio da máquina. Com a API em uso, os dados vêm dela e as mudanças chegam por WebSocket.
+Front em React, TypeScript e Vite. Não há API real nem autenticação de verdade. O tenant inicial vai em `src/dados/dados.json` (pasta `src/dados/`); o relógio dos prazos é `meta.agora` nesse snapshot, não o relógio da máquina. Atualizações enquanto a tela está aberta (novo chamado na fila, mensagem, mudança de status) entram por **eventos simulados** no mesmo formato do domínio — como se chegassem por WebSocket.
 
 ## Quem usa
 
@@ -50,9 +50,15 @@ npm run preview
 
 ## Ver como cliente, consultor ou gestor
 
-Cada perfil tem sua própria rotina na interface. Depois de subir o app com `npm run dev`, escolha o perfil na tela inicial — isso abre a visão correspondente, sem misturar as três numa só tela.
+Cada perfil tem sua própria rotina na interface. Depois de `npm run dev`, a **tela de login** abre o fluxo: um campo **usuário** (sem senha). O texto digitado define o perfil:
 
-Até o seletor existir na interface, o repositório ainda expõe apenas o scaffold da aplicação; a documentação acima descreve o comportamento alvo da área de chamados.
+| Usuário | Rotina |
+| --- | --- |
+| `consultor` | Fila e atendimento |
+| `gestor` | Painel da equipe |
+| `cliente` | Chamados do cliente |
+
+Não é autenticação — só escolha de perfil. As três rotinas continuam em telas separadas, sem misturar numa só interface.
 
 ## Outros comandos
 
@@ -68,5 +74,17 @@ Antes de enviar alterações, rode `npm run lint`, `npm test` e `npm run build` 
 ## Para quem desenvolve
 
 Convenções de produto, dados, eventos e estilo de código estão em [AGENTS.md](./AGENTS.md).
+
+### Estrutura do `src/`
+
+| Pasta | Papel |
+| --- | --- |
+| `app/` | `App`, rotas e contexto do perfil logado |
+| `features/` | Uma pasta por rotina (`autenticacao`, `cliente`, `consultor`, `gestor`) e `chamados/` para o que é compartilhado |
+| `dados/` | Snapshot `dados.json` |
+| `shared/components/` | UI reutilizável sem regra de chamado |
+| `dominio/` | Tipos e funções puras do domínio (a adicionar conforme o código crescer) |
+
+Detalhes e árvore alvo completa: [AGENTS.md § Arquitetura](./AGENTS.md#arquitetura-do-código).
 
 Stack principal: React, TypeScript, Vite, Vitest e React Testing Library (jsdom). Setup de testes em `src/setupTestes.ts`.
