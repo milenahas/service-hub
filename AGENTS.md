@@ -9,7 +9,7 @@ Decisões não definidas aqui: menor comportamento que sirva quem está na tela.
 | Item | Regra |
 | --- | --- |
 | API / auth | Não há API, WebSocket nem auth real (sem token, sessão, senha) |
-| Dados iniciais | Snapshot `src/data/dados.json` |
+| Dados iniciais | Snapshot `src/dados/dados.json` |
 | Relógio de SLA | `meta.agora` do snapshot — nunca o relógio da máquina |
 | Tempo real | Eventos **simulados** (mesmo `tipo`/`payload` da tabela abaixo), aplicados ao estado; idempotentes (reaplicar não duplica) |
 | Exemplo obrigatório | Consultor na fila recebe `chamado.aberto` enquanto a tela está aberta |
@@ -63,11 +63,25 @@ Ordem: funcionar → claro → rápido. Stack: React, TS, Vite, Vitest, RTL (jsd
 
 **Comportamento** — testar SLA, anotação interna, evento duplicado, reabertura. Props primeiro; estado só do que muda; resto calculado; estado no ancestral; dados descem, evento sobe.
 
-**Nomes** — vocabulário do domínio (chamado, mensagem, prazo…); código e pastas de feature em português (`autenticacao`, `cliente`, `consultor`, `gestor`, `chamados`). Evitar `data`, `item`, `handleClick`, `utils`.
+**Nomes** — vocabulário do domínio (chamado, mensagem, prazo…); código e pastas em português (`app`, `features`, `dados`, `dominio`, `shared`; features `autenticacao`, `cliente`, `consultor`, `gestor`, `chamados`). Evitar `data`, `item`, `handleClick`, `utils`.
 
 **Forma** — um módulo, um assunto (estado de chamado, evento e tela separados); regra de prazo/visibilidade em um lugar; estrutura plana; sem componente que só repassa props; sem cache/virtualização/worker antes da tela certa; só construir o que o produto usa agora.
 
 **Telas** — compartilhar peças (prazo, mensagem, status) entre perfis; se o compartilhado precisar parâmetro por perfil, separar.
+
+## Arquitetura
+
+| Pasta | Papel |
+| --- | --- |
+| `app/` | `App`, rotas e contexto do perfil logado |
+| `features/autenticacao` | Login e identificação do perfil pelo nome de usuário |
+| `features/cliente` | Rotina do cliente (lista e abertura de chamado) |
+| `features/consultor` | Fila e detalhe do chamado para o consultor |
+| `features/gestor` | Visão de equipe e redistribuição |
+| `features/chamados` | Peças e regras de chamado compartilhadas entre perfis |
+| `dados/` | Snapshot inicial `dados.json` |
+| `dominio/` | Tipos e funções puras do domínio |
+| `shared/components` | UI reutilizável sem regra de chamado |
 
 ## Comandos
 
