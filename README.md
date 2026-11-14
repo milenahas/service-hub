@@ -85,6 +85,4 @@ Convenções de produto, dados, eventos e estilo de código estão em [AGENTS.md
 | `shared/components/` | UI reutilizável sem regra de chamado |
 | `dominio/` | Tipos e funções puras do domínio (a adicionar conforme o código crescer) |
 
-Detalhes e árvore alvo completa: [AGENTS.md § Arquitetura](./AGENTS.md#arquitetura-do-código).
-
 Stack principal: React, TypeScript, Vite, Vitest e React Testing Library (jsdom). Setup de testes em `src/setupTestes.ts`.
