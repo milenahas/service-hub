@@ -1,0 +1,32 @@
+/* Escala tipográfica — CONTEXTO-SERVICE-HUB.md §9 */
+
+:root {
+  --fonte-principal: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --texto-titulo-tela: 1.4286rem; /* 20px na base 14px */
+  --texto-titulo-tela-grande: 1.5714rem; /* 22px */
+  --texto-titulo-cartao: 1.2143rem; /* ~17px; detalhe consultor 19px via utilitário */
+  --texto-titulo-cartao-detalhe: 1.3571rem; /* 19px */
+  --texto-numero-indicador: 2.1429rem; /* 30px */
+  --texto-corpo: 1rem; /* 14px */
+  --texto-botao: 1rem; /* 14px */
+  --peso-botao: 600;
+  --texto-meta: 0.8571rem; /* 12px */
+  --texto-meta-lista-consultor: 0.8929rem; /* 12.5px */
+  --texto-aba: 0.9286rem; /* 13px */
+  --texto-label: 0.9286rem; /* 13px */
+  --peso-label: 500;
+  --texto-rotulo-coluna: 0.7857rem; /* 11px */
+  --texto-rotulo-secao: 0.8571rem; /* 12px */
+  --texto-cabecalho-balao: 0.7857rem; /* 11px */
+  --texto-selo: 0.8571rem; /* 12px */
+
+  --peso-regular: 400;
+  --peso-medium: 500;
+  --peso-semibold: 600;
+  --peso-bold: 700;
+
+  --leading-corpo: 1.45;
+  --leading-titulo: 1.25;
+  --espacamento-rotulo-coluna: 0.05em;
+}

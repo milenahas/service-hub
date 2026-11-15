@@ -1,0 +1,69 @@
+/* Paleta Service Hub — valores fixos de service-hub-design-prototype/CONTEXTO-SERVICE-HUB.md §9 */
+
+:root {
+  /* Núcleo da interface */
+  --cor-primaria: #1582f9;
+  --cor-fundo-pagina: #f1f5f9;
+  --cor-superficie: #ffffff;
+  --cor-superficie-secundaria: #f1f5f9;
+  --cor-superficie-muda: #f8fafc;
+  --cor-texto-principal: #0f172a;
+  --cor-texto-secundario: #334155;
+  --cor-texto-terciario: #94a3b8;
+  --cor-borda: #e2e8f0;
+  --cor-borda-controle: #94a3b8;
+  --cor-selecao: #e8f2ff;
+  --cor-hover-linha: #f8fafc;
+  --cor-link: var(--cor-primaria);
+  --cor-link-hover: #0b4fa8;
+
+  /* Status do chamado */
+  --status-aberto-fundo: #e8f2ff;
+  --status-aberto-texto: #0b4fa8;
+  --status-aguardando-fundo: #fef3c7;
+  --status-aguardando-texto: #92400e;
+  --status-resolvido-fundo: #dcfce7;
+  --status-resolvido-texto: #166534;
+  --status-fechado-fundo: #f1f5f9;
+  --status-fechado-texto: #334155;
+
+  /* Prazo / SLA */
+  --prazo-estourado-fundo: #b91c1c;
+  --prazo-estourado-texto: #ffffff;
+  --prazo-urgente-fundo: #dc2626;
+  --prazo-urgente-texto: #ffffff;
+  --prazo-alerta-fundo: #fef3c7;
+  --prazo-alerta-texto: #92400e;
+  --prazo-neutro-fundo: #f1f5f9;
+  --prazo-neutro-texto: #334155;
+  --prazo-faixa-urgente: #b91c1c;
+  --prazo-faixa-alerta: #f59e0b;
+  --prazo-faixa-neutro: #334155;
+  --prazo-cabecalho-urgente-fundo: #b91c1c;
+  --prazo-cabecalho-proximas-texto: #92400e;
+  --prazo-cabecalho-demais-texto: #334155;
+
+  /* Alertas, erros e destaques */
+  --cor-erro: #b91c1c;
+  --cor-erro-borda: #fca5a5;
+  --cor-indicador-negativo: #b91c1c;
+  --cor-indicador-negativo-forte: #dc2626;
+
+  /* Notas internas */
+  --nota-painel-fundo: #fefce8;
+  --nota-painel-borda: #fde68a;
+  --nota-balao-fundo: #fef9c3;
+  --nota-balao-borda: #94a3b8;
+
+  /* Conversa — cores por papel */
+  --conversa-cliente-fundo: #f1f5f9;
+  --conversa-logado-fundo: #1582f9;
+  --conversa-logado-texto: #ffffff;
+  --conversa-outro-consultor-fundo: #e0f2fe;
+  --conversa-outro-consultor-borda: #bae6fd;
+  --conversa-outro-consultor-texto: #0c4a6e;
+
+  /* Auxiliares (layout) */
+  --sombra-suave: 0 10px 25px -5px rgb(15 23 42 / 8%),
+    0 4px 10px -6px rgb(15 23 42 / 6%);
+}
