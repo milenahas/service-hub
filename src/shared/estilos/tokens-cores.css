@@ -16,6 +16,9 @@
   --cor-hover-linha: #f8fafc;
   --cor-link: var(--cor-primaria);
   --cor-link-hover: #0b4fa8;
+  --cor-botao-primario-hover: #1275ed;
+  --cor-botao-secundario-hover: var(--cor-hover-linha);
+  --cor-botao-fantasma-hover: var(--cor-selecao);
 
   /* Status do chamado */
   --status-aberto-fundo: #e8f2ff;
