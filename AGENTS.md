@@ -73,6 +73,24 @@ Ordem: funcionar → claro → rápido. Stack: React, TS, Vite, Vitest, RTL (jsd
 
 **Forma** — um módulo, um assunto (estado de chamado, evento e tela separados); regra de prazo/visibilidade em um lugar; estrutura plana; sem componente que só repassa props; sem cache/virtualização/worker antes da tela certa; só construir o que o produto usa agora.
 
+**JSX condicional** — evitar ternário `condição ? <elemento> : null` para HTML opcional. Preferir `condição && <elemento>`. Ternário só quando os dois ramos renderizam UI distinta (não `null`).
+
+```tsx
+{/* evitar */}
+{opcaoVazia ? (
+  <option value="" disabled hidden>
+    {opcaoVazia}
+  </option>
+) : null}
+
+{/* preferir */}
+{opcaoVazia && (
+  <option value="" disabled hidden>
+    {opcaoVazia}
+  </option>
+)}
+```
+
 **Telas** — compartilhar peças (prazo, mensagem, status) entre perfis; se o compartilhado precisar parâmetro por perfil, separar.
 
 **UI compartilhada** (`shared/components`): **Botão**, **Campo** (input, textarea, select), **Conversa**, **Selo** (status/prazo) — spec visual no CONTEXTO; sem regra de chamado dentro deles.
