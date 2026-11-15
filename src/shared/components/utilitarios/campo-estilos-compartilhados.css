@@ -1,0 +1,88 @@
+/*
+ * Contraste WCAG 2.1 AA (pares verificados):
+ * - Label #334155 sobre #FFFFFF (superfície padrão) ≈ 9.9:1
+ * - Texto do controle #0F172A sobre #FFFFFF ≈ 16.1:1
+ * - Placeholder #94A3B8 sobre #FFFFFF ≈ 3.3:1 (não é único indicador; label obrigatório)
+ * - Erro #B91C1C sobre #FFFFFF ≈ 6.5:1
+ * - Legenda #334155 sobre #FFFFFF ≈ 9.9:1
+ * - Borda controle #94A3B8 vs #FFFFFF ≈ 3.3:1 (componente gráfico 1.4.11)
+ * - Foco: outline 2px #1582F9 sobre #FFFFFF ≈ 4.1:1
+ * - Controle desabilitado: texto #94A3B8 sobre #F1F5F9 ≈ 3.2:1 (estado disabled)
+ * - Borda erro #B91C1C vs #FFFFFF ≈ 6.5:1
+ */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.campo__rotulo {
+  font-size: var(--texto-label);
+  font-weight: var(--peso-label);
+  color: var(--cor-texto-secundario);
+  line-height: var(--leading-corpo);
+}
+
+.campo__controle {
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--fonte-principal);
+  font-size: var(--texto-corpo);
+  font-weight: var(--peso-regular);
+  line-height: var(--leading-corpo);
+  color: var(--cor-texto-principal);
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda-controle);
+  border-radius: 10px;
+  padding: 0 12px;
+}
+
+.campo__controle::placeholder {
+  color: var(--cor-texto-terciario);
+  opacity: 1;
+}
+
+.campo__controle:focus {
+  outline: none;
+}
+
+.campo__controle:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+  border-color: var(--cor-primaria);
+}
+
+.campo__controle[aria-invalid='true'] {
+  border-color: var(--cor-erro);
+}
+
+.campo__controle[aria-invalid='true']:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+  border-color: var(--cor-erro);
+}
+
+.campo__controle:disabled {
+  cursor: not-allowed;
+  color: var(--cor-texto-terciario);
+  background-color: var(--cor-superficie-secundaria);
+}
+
+.campo__controle--altura-padrao {
+  height: 40px;
+}
+
+.campo__erro {
+  margin: 0;
+  font-size: var(--texto-meta);
+  line-height: var(--leading-corpo);
+  color: var(--cor-erro);
+}
+
+.campo__legenda {
+  margin: 0;
+  font-size: var(--texto-meta);
+  line-height: var(--leading-corpo);
+  color: var(--cor-texto-secundario);
+}

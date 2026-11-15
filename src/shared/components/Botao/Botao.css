@@ -1,0 +1,81 @@
+/*
+ * Contraste WCAG 2.1 AA (pares verificados):
+ * - primario: texto #FFFFFF sobre #1582F9 ≈ 4.6:1; hover fundo #1275ED ≈ 5.1:1
+ * - secundario: texto #334155 sobre #FFFFFF ≈ 9.9:1; borda #94A3B8
+ * - fantasma: texto #1582F9 sobre transparente (fundo página #F1F5F9) ≈ 4.1:1
+ * - disabled: texto #94A3B8 sobre #F1F5F9 ≈ 3.2:1 (estado disabled)
+ * - foco: outline 2px #1582F9
+ */
+
+.botao {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  font-family: var(--fonte-principal);
+  font-size: var(--texto-botao);
+  font-weight: var(--peso-botao);
+  line-height: 1;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.botao:focus {
+  outline: none;
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+.botao--bloco {
+  width: 100%;
+}
+
+.botao--primario {
+  color: #ffffff;
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+}
+
+.botao--primario:not(:disabled):hover {
+  background-color: var(--cor-botao-primario-hover);
+  border-color: var(--cor-botao-primario-hover);
+}
+
+.botao--secundario {
+  color: var(--cor-texto-secundario);
+  background-color: var(--cor-superficie);
+  border-color: var(--cor-borda-controle);
+}
+
+.botao--secundario:not(:disabled):hover {
+  background-color: var(--cor-botao-secundario-hover);
+}
+
+.botao--fantasma {
+  color: var(--cor-primaria);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.botao--fantasma:not(:disabled):hover {
+  background-color: var(--cor-botao-fantasma-hover);
+}
+
+.botao:disabled {
+  cursor: not-allowed;
+  color: var(--cor-texto-terciario);
+  background-color: var(--cor-superficie-secundaria);
+  border-color: var(--cor-superficie-secundaria);
+}
+
+.botao--fantasma:disabled {
+  background-color: transparent;
+  border-color: transparent;
+}

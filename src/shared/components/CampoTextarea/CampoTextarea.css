@@ -1,0 +1,6 @@
+.campo__controle--textarea {
+  min-height: calc(1.45em * 3 + 16px);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  resize: vertical;
+}
