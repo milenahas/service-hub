@@ -2,7 +2,7 @@
 
 Central de chamados do suporte de TI. Clientes abrem chamados quando algo quebra; consultores atendem a fila, respondem e registram o que fizeram; gestores acompanham a equipe, redistribuem trabalho e enxergam o que está perto de estourar o prazo.
 
-Front em React, TypeScript e Vite. Não há API real nem autenticação de verdade. O tenant inicial vai em `src/dados/dados.json` (pasta `src/dados/`); o relógio dos prazos é `meta.agora` nesse snapshot, não o relógio da máquina. Atualizações enquanto a tela está aberta (novo chamado na fila, mensagem, mudança de status) entram por **eventos simulados** no mesmo formato do domínio — como se chegassem por WebSocket.
+Front em React, TypeScript e Vite. Não há API real nem autenticação de verdade. O tenant inicial vai em `src/data/dados.json`; o relógio dos prazos é `meta.agora` nesse snapshot, não o relógio da máquina. Atualizações enquanto a tela está aberta (novo chamado na fila, mensagem, mudança de status) entram por **eventos simulados** no mesmo formato do domínio — como se chegassem por WebSocket.
 
 ## Quem usa
 
@@ -12,7 +12,7 @@ Três rotinas, em telas separadas — não uma única interface com ramos por pe
 | --- | --- |
 | **Cliente** | Poucos chamados por ano. Quer saber se alguém pegou o chamado, quando terá resposta e o que aconteceu, sem reler tudo. Não vê categoria, grupo nem prioridade interna. Anotação interna nunca aparece. |
 | **Consultor** | Dia na fila: chamados atribuídos e fila do grupo. Prioriza prazo, responde, anota para colegas, muda status. Precisa achar de imediato o que está prestes a estourar o SLA. |
-| **Gestor** | Olha a equipe, não a conversa: carga, ociosidade, SLA nas próximas horas, redistribuição. Abre a conversa sobretudo quando o cliente escalou. |
+| **Gestor** | Foco na equipe, não a conversa: ociosidade, SLA nas próximas horas, redistribuição. Abre a conversa sobretudo quando o cliente escalou. |
 
 ## O que a área permite
 
@@ -50,15 +50,16 @@ npm run preview
 
 ## Ver como cliente, consultor ou gestor
 
-Cada perfil tem sua própria rotina na interface. Depois de `npm run dev`, a **tela de login** abre o fluxo: um campo **usuário** (sem senha). O texto digitado define o perfil:
+Cada perfil tem sua própria rotina na interface. Depois de `npm run dev`, a **tela de login** abre o fluxo: um campo **usuário** (sem senha). O texto digitado define o perfil (comparação sem distinção de maiúsculas):
 
 | Usuário | Rotina |
 | --- | --- |
-| `consultor` | Fila e atendimento |
-| `gestor` | Painel da equipe |
-| `cliente` | Chamados do cliente |
+| `consultor-infraestrutura` | Fila do grupo **Infraestrutura** (ex.: Marina Almeida) |
+| `consultor-aplicacoes` | Fila do grupo **Aplicações** (ex.: Beatriz Lima) |
+| `gestor` | Painel da equipe (ex.: Ricardo Monteiro) |
+| `cliente` | Chamados do cliente (ex.: Helena Fernandes) |
 
-Não é autenticação — só escolha de perfil. As três rotinas continuam em telas separadas, sem misturar numa só interface.
+Não é autenticação — só escolha de perfil. Não use `consultor` sozinho: há dois logins de consultor para refletir os dois grupos de atendimento. As rotinas continuam em telas separadas, sem misturar numa só interface.
 
 ## Outros comandos
 
@@ -81,7 +82,7 @@ Convenções de produto, dados, eventos e estilo de código estão em [AGENTS.md
 | --- | --- |
 | `app/` | `App`, rotas e contexto do perfil logado |
 | `features/` | Uma pasta por rotina (`autenticacao`, `cliente`, `consultor`, `gestor`) e `chamados/` para o que é compartilhado |
-| `dados/` | Snapshot `dados.json` |
+| `data/` | Snapshot `dados.json` |
 | `shared/components/` | UI reutilizável sem regra de chamado |
 | `dominio/` | Tipos e funções puras do domínio (a adicionar conforme o código crescer) |
 
