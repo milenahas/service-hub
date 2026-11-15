@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router-dom'
 import { CAMINHOS } from './caminhos.ts'
 import { RotaProtegida } from './RotaProtegida.tsx'
 import { RotaPublica } from './RotaPublica.tsx'
-import { TelaLoginProvisoria } from '../features/autenticacao/TelaLoginProvisoria.tsx'
+import { TelaLogin } from '../features/autenticacao/TelaLogin.tsx'
 import { PlaceholderCliente } from '../features/cliente/PlaceholderCliente.tsx'
 import { PlaceholderConsultor } from '../features/consultor/PlaceholderConsultor.tsx'
 import { PlaceholderGestor } from '../features/gestor/PlaceholderGestor.tsx'
@@ -14,7 +14,7 @@ export const definicaoRotas: RouteObject[] = [
     children: [
       {
         path: CAMINHOS.login,
-        element: <TelaLoginProvisoria />,
+        element: <TelaLogin />,
       },
     ],
   },

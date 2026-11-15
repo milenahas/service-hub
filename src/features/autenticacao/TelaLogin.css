@@ -1,0 +1,96 @@
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 1.5rem;
+  background-color: var(--cor-fundo-pagina);
+}
+
+.login__cartao {
+  --sombra-cartao-login: 0 10px 40px rgb(15 23 42 / 8%);
+
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 20px;
+  background-color: var(--cor-superficie);
+  box-shadow: var(--sombra-cartao-login);
+}
+
+.login__marca {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.login__emblema {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  background-color: var(--cor-primaria);
+  color: var(--cor-superficie);
+  font-size: 1.15rem;
+  font-weight: var(--peso-bold);
+  line-height: 1;
+}
+
+.login__nome-produto {
+  font-size: 1.125rem;
+  font-weight: var(--peso-semibold);
+  color: var(--cor-texto-principal);
+}
+
+.login__titulo {
+  margin: 0 0 0.5rem;
+  font-size: var(--texto-titulo-tela);
+  font-weight: var(--peso-bold);
+  line-height: var(--leading-titulo);
+  color: var(--cor-texto-principal);
+}
+
+.login__subtitulo {
+  margin: 0 0 1.5rem;
+  font-size: var(--texto-corpo);
+  line-height: var(--leading-corpo);
+  color: var(--cor-texto-secundario);
+}
+
+.login__formulario {
+  margin: 0;
+}
+
+.login__acao {
+  margin-top: 1rem;
+}
+
+.login__perfis {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: var(--cor-superficie-secundaria);
+}
+
+.login__perfis-titulo {
+  margin: 0 0 0.75rem;
+  font-size: 0.9286rem;
+  font-weight: var(--peso-medium);
+  color: var(--cor-texto-secundario);
+}
+
+.login__perfis-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.login__perfil {
+  font-size: var(--texto-corpo);
+  font-weight: var(--peso-semibold);
+  line-height: 1.6;
+  color: var(--cor-texto-principal);
+}
