@@ -69,7 +69,7 @@ Ordem: funcionar → claro → rápido. Stack: React, TS, Vite, Vitest, RTL (jsd
 
 **Comportamento** — testar SLA, anotação interna, evento duplicado, reabertura. Props primeiro; estado só do que muda; resto calculado; estado no ancestral; dados descem, evento sobe.
 
-**Nomes** — vocabulário do domínio (chamado, mensagem, prazo…); código e pastas em português (`app`, `features`, `data`, `dominio`, `shared`; features `autenticacao`, `cliente`, `consultor`, `gestor`, `chamados`).
+**Nomes** — vocabulário do domínio (chamado, mensagem, prazo…); código e pastas em português (`app`, `features`, `data`, `dominio`, `shared`; features `autenticacao`, `cliente`, `consultor`, `gestor`, `chamados`). Variáveis, funções e **props customizadas** do produto (ex.: `rotulo`, `erro`, `variante`, `bloco`) em português. **Props que espelham atributos HTML ou React** (`value`, `onChange`, `disabled`, `type`, `id`, `required`, `aria-*`, etc.) usam os **nomes nativos** nos componentes compartilhados e nas telas — não renomear para português.
 
 **Forma** — um módulo, um assunto (estado de chamado, evento e tela separados); regra de prazo/visibilidade em um lugar; estrutura plana; sem componente que só repassa props; sem cache/virtualização/worker antes da tela certa; só construir o que o produto usa agora.
 
