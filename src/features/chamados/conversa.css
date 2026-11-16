@@ -1,0 +1,116 @@
+.conversa-descricao {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-superficie-muda);
+  margin-bottom: 0.75rem;
+}
+
+.conversa-descricao__rotulo {
+  margin: 0;
+  font-size: var(--texto-meta);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cor-texto-terciario);
+}
+
+.conversa-descricao__texto {
+  margin: 0.35rem 0 0;
+  font-size: var(--texto-corpo);
+  line-height: var(--leading-corpo);
+  color: var(--cor-texto-secundario);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.conversa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.balao {
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.balao--cliente {
+  align-self: flex-start;
+}
+
+.balao--logado {
+  align-self: flex-end;
+}
+
+.balao--colega {
+  align-self: flex-end;
+}
+
+.balao--sistema {
+  align-self: center;
+  max-width: 100%;
+}
+
+.balao__corpo {
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  font-size: var(--texto-corpo);
+  line-height: var(--leading-corpo);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.balao--cliente .balao__corpo {
+  background: var(--conversa-cliente-fundo);
+  color: var(--cor-texto-principal);
+}
+
+.balao--logado .balao__corpo {
+  background: var(--conversa-logado-fundo);
+  color: var(--conversa-logado-texto);
+}
+
+.balao--colega .balao__corpo {
+  background: var(--conversa-outro-consultor-fundo);
+  border: 1px solid var(--conversa-outro-consultor-borda);
+  color: var(--conversa-outro-consultor-texto);
+}
+
+.balao--sistema .balao__corpo {
+  background: transparent;
+  color: var(--cor-texto-secundario);
+  font-style: italic;
+  text-align: center;
+}
+
+.nota-interna {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: var(--nota-balao-fundo);
+  border: 1px dashed var(--nota-balao-borda);
+  font-size: var(--texto-corpo);
+  line-height: var(--leading-corpo);
+  color: var(--cor-texto-principal);
+}
+
+.rodape-resposta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid var(--cor-borda);
+  padding-top: 1rem;
+}
+
+.rodape-resposta__legenda {
+  font-size: var(--texto-meta);
+  color: var(--cor-texto-secundario);
+}
+
+.rodape-resposta__acoes {
+  display: flex;
+  justify-content: flex-end;
+}
