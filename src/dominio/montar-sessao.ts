@@ -8,8 +8,8 @@ import type { Usuario } from './tipos.ts'
 
 function calcularContagensPorFaixa(total: number) {
   const faixaA = Math.round(total * 0.3)
-  const faixaB = Math.round(total * 0.3)
-  const faixaC = Math.round(total * 0.2)
+  const faixaB = Math.round(total * 0.4)
+  const faixaC = Math.round(total * 0.15)
   const faixaD = total - faixaA - faixaB - faixaC
   return { faixaA, faixaB, faixaC, faixaD }
 }
@@ -188,7 +188,7 @@ export function montarSessao(
   }
 
   if (usuarioLogado.perfil === 'consultor' && usuarioLogado.grupo_id) {
-    const total = inteiroAleatorio(20, 50, aleatorio)
+    const total = inteiroAleatorio(20, 100, aleatorio)
     const chamados = montarChamadosConsultor(
       snapshot,
       usuarioLogado.grupo_id,

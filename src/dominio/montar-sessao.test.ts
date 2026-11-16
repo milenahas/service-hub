@@ -13,10 +13,10 @@ const leandro: Usuario = {
   zoneinfo: 'Europe/Lisbon',
 }
 
-const marina: Usuario = {
-  id: 'ae4d6fdf-bd5b-4fe0-879a-f86c41012b99',
-  nome: 'Marina Almeida',
-  email: 'marina@example',
+const thiago: Usuario = {
+  id: '50039fe7-2ddf-4a02-8045-c635a4c724f6',
+  nome: 'Thiago Nascimento',
+  email: 'thiago@example',
   perfil: 'consultor',
   locale: 'pt-BR',
   zoneinfo: 'America/Sao_Paulo',
@@ -47,7 +47,7 @@ function criarSnapshotMinimo(): SnapshotCompleto {
         resolucao_horas: 24,
       },
     ],
-    usuarios: [leandro, marina],
+    usuarios: [leandro, thiago],
     chamados: [
       {
         id: 'c1',
@@ -134,7 +134,7 @@ describe('montarSessao', () => {
     }))
     snapshot.chamados.push(...chamadosExtras)
 
-    const tenant = montarSessao(snapshot, marina, aleatorio)
+    const tenant = montarSessao(snapshot, thiago, aleatorio)
     expect(tenant.chamados.length).toBeGreaterThanOrEqual(20)
     expect(tenant.chamados.length).toBeLessThanOrEqual(50)
     expect(tenant.chamados.every((c) => c.grupo_id === 'grupo-infra')).toBe(true)
