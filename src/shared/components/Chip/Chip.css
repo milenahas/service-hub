@@ -1,0 +1,62 @@
+/*
+ * Contraste WCAG 2.1 AA (mesmos pares do botão primário e do secundário):
+ * - escolhido: texto branco (--cor-superficie) sobre --cor-primaria
+ * - não escolhido: --cor-texto-secundario sobre --cor-superficie
+ * - foco: outline 2px --cor-primaria
+ */
+
+.chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  margin: 0;
+  padding: 0 14px;
+  font-family: var(--fonte-principal);
+  font-size: var(--texto-label);
+  font-weight: var(--peso-label);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--cor-texto-secundario);
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda-controle);
+  border-radius: 999px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.chip:focus {
+  outline: none;
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+.chip--selecionado {
+  color: var(--cor-superficie);
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+}
+
+.chip--selecionado:not(:disabled):hover {
+  background-color: var(--cor-botao-primario-hover);
+  border-color: var(--cor-botao-primario-hover);
+}
+
+.chip:not(.chip--selecionado):not(:disabled):hover {
+  background-color: var(--cor-botao-secundario-hover);
+}
+
+.chip:disabled {
+  cursor: not-allowed;
+}
+
+.grupo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
