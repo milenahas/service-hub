@@ -56,3 +56,31 @@ a {
 a:hover {
   color: var(--cor-link-hover);
 }
+
+/* Scroll fino — mesma aparência em toda a app (ver PRD tela-consultor § lista) */
+@supports (-moz-appearance: none) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--cor-texto-terciario) transparent;
+  }
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 4px;
+  margin-inline: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--cor-texto-terciario);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--cor-texto-secundario);
+}
