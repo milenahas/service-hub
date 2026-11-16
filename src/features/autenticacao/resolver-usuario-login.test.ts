@@ -12,18 +12,18 @@ const usuariosFixos: Usuario[] = [
     zoneinfo: 'America/Sao_Paulo',
   },
   {
-    id: 'ae4d6fdf-bd5b-4fe0-879a-f86c41012b99',
-    nome: 'Marina Almeida',
-    email: 'marina.almeida@suporte.example',
+    id: '50039fe7-2ddf-4a02-8045-c635a4c724f6',
+    nome: 'Thiago Nascimento',
+    email: 'thiago.nascimento@suporte.example',
     perfil: 'consultor',
     locale: 'pt-BR',
     zoneinfo: 'America/Sao_Paulo',
     grupo_id: '29be5d21-2981-4b38-a4c2-771116e58928',
   },
   {
-    id: '079d16b1-1e0b-43bd-8740-ad3d3e20b552',
-    nome: 'Beatriz Lima',
-    email: 'beatriz.lima@suporte.example',
+    id: '85d44809-37ca-4797-8fbf-53f112ebe792',
+    nome: 'Felipe Gomes',
+    email: 'felipe.gomes@suporte.example',
     perfil: 'consultor',
     locale: 'pt-BR',
     zoneinfo: 'America/Sao_Paulo',
@@ -48,10 +48,10 @@ describe('resolverUsuarioLogin', () => {
       '875d257a-0dff-4428-a233-5332d0e67b86',
     )
     expect(resolverUsuarioLogin('consultor-infraestrutura', usuariosFixos)?.id).toBe(
-      'ae4d6fdf-bd5b-4fe0-879a-f86c41012b99',
+      '50039fe7-2ddf-4a02-8045-c635a4c724f6',
     )
     expect(resolverUsuarioLogin('consultor-aplicacoes', usuariosFixos)?.id).toBe(
-      '079d16b1-1e0b-43bd-8740-ad3d3e20b552',
+      '85d44809-37ca-4797-8fbf-53f112ebe792',
     )
     expect(resolverUsuarioLogin('cliente', usuariosFixos)?.nome).toBe(
       'Leandro Mendes',
