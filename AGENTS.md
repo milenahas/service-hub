@@ -79,6 +79,8 @@ Ordem: funcionar → claro → rápido. Stack: React, TS, Vite, Vitest, RTL (jsd
 
 **Telas** — compartilhar peças (prazo, mensagem, status) entre perfis; se o compartilhado precisar parâmetro por perfil, separar.
 
+**Documentação de feature** — ao criar ou estender uma pasta em `features/`, cada módulo de rotina (`Tela*.tsx`, painéis, colunas e `.ts` de regra da mesma feature) leva um bloco JSDoc **logo acima** do `export` principal, em português. O bloco explica a função principal do arquivo (o que monta ou orquestra, que estado local guarda, que ações dispara) e o que **não** fica ali, apontando os vizinhos com crase e nome de arquivo (ex.: `ColunaFila.tsx`, `fila-consultor.ts`, store em `app/store.ts`). Referência de tom e estrutura: `TelaConsultor.tsx`, `ColunaFila.tsx`, `PainelChamado.tsx`, `fila-consultor.ts` — tela orquestra e reparte props/callbacks; painel desenha um trecho da UI e delega o resto; módulo `.ts` descreve transformação/filtro e deixa explícito que não desenha. Não repetir tipos ou assinaturas no comentário; só papel na rotina e fronteiras entre arquivos.
+
 **UI compartilhada** (`shared/components`): **Botão**, **Campo** (input, textarea, select), **Conversa**, **Selo** (status/prazo) — spec visual no CONTEXTO; sem regra de chamado dentro deles.
 
 ## Arquitetura
