@@ -32,9 +32,14 @@ export function Selo(props: PropsSelo) {
 
   if (props.apresentacao === 'texto-cinza') {
     classes.push('selo--texto-cinza')
-  } else if (props.apresentacao === 'prazo') {
+  }
+  if (props.apresentacao === 'prazo') {
     classes.push(`selo--prazo-${props.faixa}`)
-  } else {
+  }
+  if (
+    props.apresentacao === 'status-preenchido' ||
+    props.apresentacao === 'status-borda'
+  ) {
     classes.push(`selo--${props.apresentacao}`, `selo--chamado-${props.status}`)
   }
 
