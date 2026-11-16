@@ -31,15 +31,15 @@
   --status-fechado-texto: #334155;
 
   /* Prazo / SLA */
-  --prazo-estourado-fundo: #b91c1c;
+  --prazo-estourado-fundo: #fee4e2;
   --prazo-estourado-texto: #ffffff;
-  --prazo-urgente-fundo: #dc2626;
-  --prazo-urgente-texto: #ffffff;
+  --prazo-urgente-fundo: var(--prazo-estourado-fundo);
+  --prazo-urgente-texto: #b42318;
   --prazo-alerta-fundo: #fef3c7;
   --prazo-alerta-texto: #92400e;
   --prazo-neutro-fundo: #f1f5f9;
   --prazo-neutro-texto: #334155;
-  --prazo-faixa-urgente: #b91c1c;
+  --prazo-faixa-urgente: #d92d20;
   --prazo-faixa-alerta: #f59e0b;
   --prazo-faixa-neutro: #334155;
   --prazo-cabecalho-urgente-fundo: #b91c1c;
