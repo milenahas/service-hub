@@ -1,0 +1,46 @@
+.cabecalho-app {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.cabecalho-app__marca {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.cabecalho-app__emblema {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: var(--cor-primaria);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.cabecalho-app__nome-produto {
+  font-weight: 600;
+  font-size: var(--texto-titulo-cartao);
+  color: var(--cor-texto-principal);
+}
+
+.cabecalho-app__acoes {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cabecalho-app__usuario {
+  font-size: var(--texto-corpo);
+  color: var(--cor-texto-secundario);
+}
