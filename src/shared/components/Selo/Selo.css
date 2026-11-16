@@ -4,8 +4,8 @@
  * - aguardando: #92400E / #FEF3C7 ≈ 5.8:1
  * - resolvido: #166534 / #DCFCE7 ≈ 6.2:1
  * - fechado: #334155 / #F1F5F9 ≈ 8.0:1
- * - prazo estourado: #FFFFFF / #B91C1C ≈ 6.5:1
- * - prazo urgente: #FFFFFF / #DC2626 ≈ 5.9:1
+ * - prazo estourado: #B42318 / #FEE4E2 ≈ 5.9:1
+ * - prazo urgente: #B42318 / #FEE4E2 ≈ 5.9:1 (mesmo par que estourado)
  * - prazo alerta: #92400E / #FEF3C7 ≈ 5.8:1
  * - prazo neutro: #334155 / #F1F5F9 ≈ 8.0:1
  * - status-borda: texto e borda na cor do status sobre superfície clara ≥ 4.5:1
@@ -73,7 +73,7 @@
 
 .selo--prazo-estourado {
   background-color: var(--prazo-estourado-fundo);
-  color: var(--prazo-estourado-texto);
+  color: var(--prazo-urgente-texto);
 }
 
 .selo--prazo-urgente {
