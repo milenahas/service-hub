@@ -30,12 +30,14 @@ Um campo **usuário**, sem senha — seletor de perfil com cara de login. **Quat
 
 | `usuario` (digitado) | Rotina | Usuário no snapshot (referência) |
 | --- | --- | --- |
-| `consultor-infraestrutura` | Consultor · Infraestrutura | Marina Almeida |
-| `consultor-aplicacoes` | Consultor · Aplicações | Beatriz Lima |
+| `consultor-infraestrutura` | Consultor · Infraestrutura | Thiago Nascimento |
+| `consultor-aplicacoes` | Consultor · Aplicações | Felipe Gomes |
 | `gestor` | Gestor | Ricardo Monteiro |
-| `cliente` | Cliente | Helena Fernandes (`locale` pt-PT, Lisboa) |
+| `cliente` | Cliente | Leandro Mendes (`7a853f14-c064-4dc4-bb24-8e8fdce4ccd4`) |
 
 Comparação **case-insensitive** com trim. Usuário inválido: erro inline sob o campo (sem toast). Nomes exibidos no cabeçalho vêm do `nome` no snapshot, não do texto digitado.
+
+**Sessão em memória** (`app/store`, Zustand + `dominio/montar-sessao` no login; sem `localStorage`; logout/F5 zera; `dados.json` no disco não muda). **Cliente:** todos os chamados com `solicitante_id` do logado. **Consultor:** sorteia 20–50 chamados do `grupo_id` — 30% `em_atendimento` do consultor logado, 40% `em_atendimento` de outros do mesmo grupo, 15% `aberto` sem dono, 15% `resolvido`/`fechado`. **Gestor:** sorteia 10–15 consultores (Infra+Aplicações) e 20–50 chamados com a mesma regra no subconjunto (`consultoresEquipeGestor` na store). `meta`, grupos, categorias, `sla` e `usuarios` inteiros; `chamados`, `mensagens`, `historico` só da sessão (crescem com ações/timer). Sorteio lê o JSON; **injeções** na sessão usam id/`numero`/texto novos e passam por eventos idempotentes. Especificação: `PRDs/tela-login.md` §7.5.
 
 ## O que a área faz
 
@@ -67,7 +69,7 @@ Snapshot em `src/data/dados.json`: `meta`, `grupos`, `categorias`, `sla`, `usuar
 
 Ordem: funcionar → claro → rápido. Stack: React, TS, Vite, Vitest, RTL (jsdom); setup em `src/setupTestes.ts`. Nova dependência só se o código direto não resolver.
 
-**Comportamento** — testar SLA, anotação interna, evento duplicado, reabertura. Props primeiro; estado só do que muda; resto calculado; estado no ancestral; dados descem, evento sobe.
+**Comportamento** — testar SLA, anotação interna, evento duplicado, reabertura. Props primeiro; tenant mutável na store; resto calculado; dados descem, evento sobe.
 
 **Nomes** — vocabulário do domínio (chamado, mensagem, prazo…); código e pastas em português (`app`, `features`, `data`, `dominio`, `shared`; features `autenticacao`, `cliente`, `consultor`, `gestor`, `chamados`). Variáveis, funções e **props customizadas** do produto (ex.: `rotulo`, `erro`, `variante`, `bloco`) em português. **Props que espelham atributos HTML ou React** (`value`, `onChange`, `disabled`, `type`, `id`, `required`, `aria-*`, etc.) usam os **nomes nativos** nos componentes compartilhados e nas telas — não renomear para português.
 
@@ -99,7 +101,7 @@ Ordem: funcionar → claro → rápido. Stack: React, TS, Vite, Vitest, RTL (jsd
 
 | Pasta | Papel |
 | --- | --- |
-| `app/` | `App`, rotas e contexto do perfil logado |
+| `app/` | Rotas (`react-router-dom`), `store.ts` (Zustand), guards por perfil |
 | `features/autenticacao` | Login e identificação do perfil pelo nome de usuário |
 | `features/cliente` | Rotina do cliente (lista e abertura de chamado) |
 | `features/consultor` | Fila e detalhe do chamado para o consultor |

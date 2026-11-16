@@ -54,8 +54,8 @@ Cada perfil tem sua própria rotina na interface. Depois de `npm run dev`, a **t
 
 | Usuário | Rotina |
 | --- | --- |
-| `consultor-infraestrutura` | Fila do grupo **Infraestrutura** (ex.: Marina Almeida) |
-| `consultor-aplicacoes` | Fila do grupo **Aplicações** (ex.: Beatriz Lima) |
+| `consultor-infraestrutura` | Fila do grupo **Infraestrutura** (ex.: Thiago Nascimento) |
+| `consultor-aplicacoes` | Fila do grupo **Aplicações** (ex.: Felipe Gomes) |
 | `gestor` | Painel da equipe (ex.: Ricardo Monteiro) |
 | `cliente` | Chamados do cliente (ex.: Helena Fernandes) |
 
