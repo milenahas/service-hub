@@ -15,6 +15,13 @@ function perfilParaTexto(perfil: Perfil): string {
   return 'Gestor'
 }
 
+function textoSeloPerfil(perfil: Perfil, complemento: string): string {
+  const rotulo = perfilParaTexto(perfil)
+  const extra = complemento.trim()
+  if (!extra) return rotulo
+  return `${rotulo} · ${extra}`
+}
+
 export function CabecalhoApp({ rotuloPerfil }: PropsCabecalhoApp) {
   const usuario = useStore((e) => e.usuarioLogado)
   const sair = useStore((e) => e.sair)
@@ -34,7 +41,9 @@ export function CabecalhoApp({ rotuloPerfil }: PropsCabecalhoApp) {
           S
         </span>
         <span className="cabecalho-app__nome-produto">Service Hub</span>
-        <Selo apresentacao="texto-cinza">{`${perfilParaTexto(usuario.perfil)} · ${rotuloPerfil}`}</Selo>
+        <Selo apresentacao="texto-cinza">
+          {textoSeloPerfil(usuario.perfil, rotuloPerfil)}
+        </Selo>
       </div>
       <div className="cabecalho-app__acoes">
         <span className="cabecalho-app__usuario">{usuario.nome}</span>
