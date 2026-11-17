@@ -5,6 +5,10 @@ export function textoAtribuicao(nomeConsultor: string): string {
   return `Chamado atribuído a ${nomeConsultor}`
 }
 
+export function textoDesatribuicao(): string {
+  return 'Chamado sem responsável'
+}
+
 export function textoMudancaStatus(
   motivo: string,
   rotuloDe: string,
