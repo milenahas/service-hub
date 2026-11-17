@@ -8,6 +8,8 @@ export type PropsCampoSelect = {
   rotulo: string
   opcoes: OpcaoSelect[]
   opcaoVazia?: string
+  /** Opção selecionável com value="" e rótulo fixo; só fluxos de gestor. */
+  opcaoSemResponsavel?: boolean
   erro?: string
   legenda?: string
 } & SelectHTMLAttributes<HTMLSelectElement>
@@ -16,6 +18,7 @@ export function CampoSelect({
   rotulo,
   opcoes,
   opcaoVazia,
+  opcaoSemResponsavel,
   erro,
   legenda,
   id,
@@ -42,6 +45,9 @@ export function CampoSelect({
           <option value="" disabled hidden>
             {opcaoVazia}
           </option>
+        )}
+        {opcaoSemResponsavel && (
+          <option value="">Sem responsável</option>
         )}
         {opcoes.map((opcao) => (
           <option key={opcao.valor} value={opcao.valor}>

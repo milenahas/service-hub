@@ -43,4 +43,26 @@ describe('CampoSelect', () => {
     expect(opcaoVazia).toBeDisabled()
     expect(opcaoVazia).toHaveAttribute('value', '')
   })
+
+  it('renderiza opção sem responsável selecionável no gestor', () => {
+    const onChange = vi.fn()
+    render(
+      <CampoSelect
+        id="responsavel"
+        rotulo="Responsável"
+        value=""
+        onChange={onChange}
+        opcoes={[{ valor: 'c1', rotulo: 'Ana' }]}
+        opcaoSemResponsavel
+      />,
+    )
+
+    const opcao = screen.getByText('Sem responsável', { selector: 'option' })
+    expect(opcao).toHaveAttribute('value', '')
+    expect(opcao).not.toBeDisabled()
+
+    const campo = screen.getByLabelText('Responsável')
+    fireEvent.change(campo, { target: { value: '' } })
+    expect(onChange).toHaveBeenCalled()
+  })
 })
