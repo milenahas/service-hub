@@ -4,7 +4,7 @@ import { CAMINHOS } from './caminhos.ts'
 import { RotaProtegida } from './RotaProtegida.tsx'
 import { RotaPublica } from './RotaPublica.tsx'
 import { TelaLogin } from '../features/autenticacao/TelaLogin.tsx'
-import { PlaceholderCliente } from '../features/cliente/PlaceholderCliente.tsx'
+import { TelaCliente } from '../features/cliente/TelaCliente.tsx'
 import { TelaConsultor } from '../features/consultor/TelaConsultor.tsx'
 import { TelaGestor } from '../features/gestor/TelaGestor.tsx'
 
@@ -23,7 +23,7 @@ export const definicaoRotas: RouteObject[] = [
     children: [
       {
         path: CAMINHOS.cliente,
-        element: <PlaceholderCliente />,
+        element: <TelaCliente />,
       },
     ],
   },
