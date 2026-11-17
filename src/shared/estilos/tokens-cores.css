@@ -13,6 +13,8 @@
   --cor-borda: #e2e8f0;
   --cor-borda-controle: #94a3b8;
   --cor-selecao: #e8f2ff;
+  /* Cartão sobre --cor-fundo-pagina: --cor-selecao some nesse cinza */
+  --cor-selecao-cartao: #c5dffc;
   --cor-hover-linha: #f8fafc;
   --cor-link: var(--cor-primaria);
   --cor-link-hover: #0b4fa8;

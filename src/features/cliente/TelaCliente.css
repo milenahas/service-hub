@@ -66,7 +66,7 @@
 
 .cartao-chamado-cliente--selecionado,
 .cartao-chamado-cliente--selecionado:hover {
-  background: var(--cor-selecao);
+  background: var(--cor-selecao-cartao);
 }
 
 .cartao-chamado-cliente:focus-visible {
