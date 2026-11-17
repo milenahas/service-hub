@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { CabecalhoApp } from '../../app/CabecalhoApp.tsx'
-import { useStore } from '../../app/store.ts'
+import { definirChamadoSelecionadoSimulacao, useStore } from '../../app/store.ts'
 import type { AbaFila, FiltroLista } from './fila-consultor.ts'
 import {
   chamadoVisivelNaFila,
@@ -16,13 +16,15 @@ import './TelaConsultor.css'
  * Orquestra a rotina do consultor: cabeçalho, grade com fila, detalhe do
  * chamado e painel de notas (quando aberto). Guarda aba, busca, filtro,
  * seleção e `notasAbertas`; escolhe o chamado visível na fila e repassa
- * ações à store (pegar, mensagem, status, nota interna).
+ * ações à store (pegar, mensagem, status, nota interna). Publica o
+ * chamado selecionado para a simulação ao vivo.
  * Responsável por ler a store e distribuir tenant, usuário e callbacks
  * em props para os componentes filhos.
  *
  * Desenho da fila e dos painéis fica em `ColunaFila.tsx` e
- * `PainelChamado.tsx` / `PainelNotas.tsx`. Simulação ao vivo e tenant na
- * store; não lidos em `usar-nao-lidos.ts`.
+ * `PainelChamado.tsx` / `PainelNotas.tsx`. Os disparos ficam em
+ * `simulacao-consultor.ts`; a store em `app/store.ts` guarda o id
+ * selecionado e o tenant. Não lidos em `usar-nao-lidos.ts`.
  */
 export function TelaConsultor() {
   const usuario = useStore((e) => e.usuarioLogado)
@@ -42,7 +44,10 @@ export function TelaConsultor() {
 
   useEffect(() => {
     iniciarSimulacao()
-    return () => pararSimulacao()
+    return () => {
+      pararSimulacao()
+      definirChamadoSelecionadoSimulacao(null)
+    }
   }, [iniciarSimulacao, pararSimulacao])
 
   const secoesVisiveis = useMemo(() => {
@@ -57,6 +62,10 @@ export function TelaConsultor() {
     }
     return secoesVisiveis[0]?.chamados[0]?.id ?? null
   }, [tenant, usuario, selecionadoId, secoesVisiveis])
+
+  useEffect(() => {
+    definirChamadoSelecionadoSimulacao(chamadoSelecionadoId)
+  }, [chamadoSelecionadoId])
 
   const { naoLidos, limparNaoLido } = useNaoLidos(tenant, chamadoSelecionadoId)
 

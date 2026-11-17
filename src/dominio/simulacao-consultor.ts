@@ -1,9 +1,12 @@
 import type { GeradorAleatorio } from './aleatorio.ts'
 import { inteiroAleatorio } from './aleatorio.ts'
+import type { StatusChamado } from './chamado.ts'
+import type { Evento, EventoChamadoAberto, EventoMensagemAdicionada, EventoStatusAlterado } from './evento.ts'
+import { criarIdEvento } from './evento.ts'
+import { chamadoAtivo } from './prazo.ts'
+import { selecionarTransicoesStatus } from './selecionar-transicoes-status.ts'
 import type { Chamado, TenantSessao } from './snapshot.ts'
 import type { Usuario } from './tipos.ts'
-import type { Evento, EventoChamadoAberto } from './evento.ts'
-import { criarIdEvento } from './evento.ts'
 
 export type Relogio = {
   agoraIso: () => string
@@ -17,8 +20,11 @@ export const relogioPadrao: Relogio = {
   clearTimeout: (id) => clearTimeout(id),
 }
 
-const MIN_INTERVALO_MS = 60_000
-const MAX_INTERVALO_MS = 180_000
+const INTERVALO_CHAMADO_MS = 7_000
+const INTERVALO_MENSAGEM_MS = 12_000
+const INTERVALO_STATUS_MS = 14_000
+
+const MOTIVO_STATUS_SIMULADO = 'Simulação da fila.'
 
 function maiorNumeroChamado(chamados: Chamado[]): number {
   return chamados.reduce((max, c) => Math.max(max, c.numero), 0)
@@ -92,6 +98,92 @@ export function gerarChamadoInjetado(
   }
 }
 
+function idsConsultoresDoGrupo(tenant: TenantSessao, grupoId: string): Set<string> {
+  return new Set(
+    tenant.usuarios
+      .filter((u) => u.perfil === 'consultor' && u.grupo_id === grupoId)
+      .map((u) => u.id),
+  )
+}
+
+/** Minha fila e Fila do grupo, sem o chamado selecionado na hora do disparo. */
+export function listarChamadosSimulaveis(
+  tenant: TenantSessao,
+  consultor: Usuario,
+  chamadoSelecionadoId: string | null,
+): Chamado[] {
+  const grupoId = consultor.grupo_id
+  if (!grupoId) return []
+  const consultores = idsConsultoresDoGrupo(tenant, grupoId)
+  return tenant.chamados.filter((chamado) => {
+    const dono = chamado.responsavel_id
+    return (
+      chamado.id !== chamadoSelecionadoId &&
+      chamado.grupo_id === grupoId &&
+      chamadoAtivo(chamado.status) &&
+      dono !== null &&
+      (dono === consultor.id || consultores.has(dono))
+    )
+  })
+}
+
+function sortearChamado(
+  chamados: Chamado[],
+  aleatorio: GeradorAleatorio,
+): Chamado | undefined {
+  if (chamados.length === 0) return undefined
+  return chamados[inteiroAleatorio(0, chamados.length - 1, aleatorio)]
+}
+
+export function gerarMensagemSimulada(
+  tenant: TenantSessao,
+  chamado: Chamado,
+  aleatorio: GeradorAleatorio = Math.random,
+): EventoMensagemAdicionada {
+  const sufixo = inteiroAleatorio(1000, 9999, aleatorio)
+  const mensagemId = criarIdEvento()
+  return {
+    id: criarIdEvento(),
+    tipo: 'mensagem.adicionada',
+    ocorrido_em: tenant.meta.agora,
+    payload: {
+      id: mensagemId,
+      chamado_id: chamado.id,
+      autor_id: chamado.solicitante_id,
+      corpo: `Mensagem simulada do cliente · ${sufixo}`,
+      criado_em: tenant.meta.agora,
+      interna: false,
+    },
+  }
+}
+
+function destinosSimulados(status: StatusChamado): StatusChamado[] {
+  return selecionarTransicoesStatus(status).filter((destino) => chamadoAtivo(destino))
+}
+
+export function gerarMudancaStatusSimulada(
+  tenant: TenantSessao,
+  chamado: Chamado,
+  aleatorio: GeradorAleatorio = Math.random,
+): EventoStatusAlterado | null {
+  const responsavelId = chamado.responsavel_id
+  const destinos = destinosSimulados(chamado.status)
+  if (!responsavelId || !chamadoAtivo(chamado.status) || destinos.length === 0) return null
+  const para = destinos[inteiroAleatorio(0, destinos.length - 1, aleatorio)]!
+  return {
+    id: criarIdEvento(),
+    tipo: 'status.alterado',
+    ocorrido_em: tenant.meta.agora,
+    payload: {
+      chamado_id: chamado.id,
+      de: chamado.status,
+      para,
+      motivo: MOTIVO_STATUS_SIMULADO,
+      usuario_id: responsavelId,
+    },
+  }
+}
+
 export type ControleSimulacao = {
   parar: () => void
 }
@@ -99,7 +191,7 @@ export type ControleSimulacao = {
 type OpcoesSimulacao = {
   relogio?: Relogio
   aleatorio?: GeradorAleatorio
-  modoDemonstracao?: boolean
+  obterChamadoSelecionadoId?: () => string | null
 }
 
 export function iniciarSimulacaoConsultor(
@@ -110,72 +202,54 @@ export function iniciarSimulacaoConsultor(
 ): ControleSimulacao {
   const relogio = opcoes.relogio ?? relogioPadrao
   const aleatorio = opcoes.aleatorio ?? Math.random
+  const obterChamadoSelecionadoId = opcoes.obterChamadoSelecionadoId ?? (() => null)
   const timeouts: ReturnType<typeof globalThis.setTimeout>[] = []
+  let ativa = true
 
   const agendar = (fn: () => void, ms: number) => {
     const id = relogio.setTimeout(fn, ms)
     timeouts.push(id)
   }
 
-  const agendarProximoInjecao = () => {
-    const intervalo = inteiroAleatorio(
-      MIN_INTERVALO_MS,
-      MAX_INTERVALO_MS,
+  const agendarCiclo = (intervalo: number, disparar: () => void) => {
+    const passo = () => {
+      if (!ativa) return
+      disparar()
+      if (ativa) agendar(passo, intervalo)
+    }
+    agendar(passo, intervalo)
+  }
+
+  const dispararChamado = () => {
+    const tenant = obterTenant()
+    if (!tenant || !consultor.grupo_id) return
+    aplicar(gerarChamadoInjetado(tenant, consultor, aleatorio))
+  }
+
+  const dispararNaFila = (montar: (tenant: TenantSessao, chamado: Chamado) => Evento | null) => {
+    const tenant = obterTenant()
+    if (!tenant || !consultor.grupo_id) return
+    const alvo = sortearChamado(
+      listarChamadosSimulaveis(tenant, consultor, obterChamadoSelecionadoId()),
       aleatorio,
     )
-    agendar(() => {
-      const tenant = obterTenant()
-      if (tenant && consultor.grupo_id) {
-        aplicar(gerarChamadoInjetado(tenant, consultor, aleatorio))
-      }
-      agendarProximoInjecao()
-    }, intervalo)
+    if (!alvo) return
+    const evento = montar(tenant, alvo)
+    if (!evento) return
+    aplicar(evento)
   }
 
-  agendarProximoInjecao()
-
-  if (opcoes.modoDemonstracao) {
-    let eventoDemoAberto: EventoChamadoAberto | undefined
-
-    agendar(() => {
-      const tenant = obterTenant()
-      if (!tenant) return
-      eventoDemoAberto = gerarChamadoInjetado(tenant, consultor, aleatorio)
-      aplicar(eventoDemoAberto)
-    }, 7_000)
-
-    agendar(() => {
-      const tenant = obterTenant()
-      if (!tenant) return
-      const chamado =
-        tenant.chamados.find((c) => c.id !== eventoDemoAberto?.payload.id) ??
-        tenant.chamados[0]
-      if (!chamado) return
-      const mensagemId = criarIdEvento()
-      aplicar({
-        id: criarIdEvento(),
-        tipo: 'mensagem.adicionada',
-        ocorrido_em: tenant.meta.agora,
-        payload: {
-          id: mensagemId,
-          chamado_id: chamado.id,
-          autor_id: chamado.solicitante_id,
-          corpo: 'Mensagem simulada do cliente para teste de não lido.',
-          criado_em: tenant.meta.agora,
-          interna: false,
-        },
-      })
-    }, 12_000)
-
-    agendar(() => {
-      if (eventoDemoAberto) {
-        aplicar(eventoDemoAberto)
-      }
-    }, 14_000)
-  }
+  agendarCiclo(INTERVALO_CHAMADO_MS, dispararChamado)
+  agendarCiclo(INTERVALO_MENSAGEM_MS, () => {
+    dispararNaFila((tenant, chamado) => gerarMensagemSimulada(tenant, chamado, aleatorio))
+  })
+  agendarCiclo(INTERVALO_STATUS_MS, () => {
+    dispararNaFila((tenant, chamado) => gerarMudancaStatusSimulada(tenant, chamado, aleatorio))
+  })
 
   return {
     parar: () => {
+      ativa = false
       for (const id of timeouts) {
         relogio.clearTimeout(id)
       }

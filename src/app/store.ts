@@ -36,6 +36,15 @@ type EstadoStore = {
 }
 
 let controleSimulacao: ControleSimulacao | null = null
+let chamadoSelecionadoSimulacao: string | null = null
+
+export function definirChamadoSelecionadoSimulacao(id: string | null) {
+  chamadoSelecionadoSimulacao = id
+}
+
+function limparChamadoSelecionadoSimulacao() {
+  chamadoSelecionadoSimulacao = null
+}
 
 function pararSimulacaoInterna() {
   controleSimulacao?.parar()
@@ -53,6 +62,7 @@ export const useStore = create<EstadoStore>((set, get) => ({
 
   iniciarSessao: (usuario) => {
     pararSimulacaoInterna()
+    limparChamadoSelecionadoSimulacao()
     const tenant = montarSessao(snapshotInicial, usuario)
     set({
       usuarioLogado: usuario,
@@ -63,6 +73,7 @@ export const useStore = create<EstadoStore>((set, get) => ({
 
   sair: () => {
     pararSimulacaoInterna()
+    limparChamadoSelecionadoSimulacao()
     set({
       usuarioLogado: null,
       tenant: null,
@@ -204,12 +215,11 @@ export const useStore = create<EstadoStore>((set, get) => ({
   iniciarSimulacaoConsultor: () => {
     const { usuarioLogado, aplicarEvento: aplicar } = get()
     if (!usuarioLogado || usuarioLogado.perfil !== 'consultor') return
-    const modoDemonstracao = import.meta.env.DEV
     controleSimulacao = iniciarSimulacaoConsultor(
       usuarioLogado,
       () => get().tenant,
       (evento) => aplicar(evento),
-      { modoDemonstracao },
+      { obterChamadoSelecionadoId: () => chamadoSelecionadoSimulacao },
     )
   },
 
@@ -221,6 +231,7 @@ export const useStore = create<EstadoStore>((set, get) => ({
 /** Reset da store entre testes. */
 export function resetarStoreParaTestes() {
   pararSimulacaoInterna()
+  limparChamadoSelecionadoSimulacao()
   useStore.setState({
     usuarioLogado: null,
     tenant: null,
