@@ -120,7 +120,7 @@ export function PainelChamadoCliente({
       </div>
 
       {faixa && (
-        <div className={`faixa-etapa faixa-etapa--${faixa.tom}`}>
+        <div className={`faixa-etapa faixa-etapa--${faixa.variante}`}>
           <span className="faixa-etapa__ponto" aria-hidden="true" />
           <span>{faixa.frase}</span>
         </div>

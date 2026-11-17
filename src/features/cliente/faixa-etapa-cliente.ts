@@ -1,17 +1,17 @@
 import type { StatusChamado } from '../../dominio/chamado.ts'
 
-export type TomFaixaEtapa = 'aberto' | 'aguardando' | 'resolvido'
+export type VarianteFaixaEtapa = 'aberto' | 'aguardando' | 'resolvido'
 
 export type FaixaEtapaCliente = {
-  tom: TomFaixaEtapa
+  variante: VarianteFaixaEtapa
   frase: string
 }
 
 /**
- * Frase e tom da faixa de etapa do cliente. `fechado` devolve null
- * (a faixa não é desenhada). Não pinta: `PainelChamadoCliente.tsx` usa
- * o tom para a cor e a frase como texto. O nome do responsável vem do
- * painel, já resolvido em `usuarios`.
+ * Frase e variante visual da faixa de etapa do cliente. `fechado` devolve
+ * null (a faixa não é desenhada). Não pinta: `PainelChamadoCliente.tsx` usa
+ * a variante na classe da cor e a frase como texto. O nome do responsável
+ * vem do painel, já resolvido em `usuarios`.
  */
 export function faixaEtapaCliente(
   status: StatusChamado,
@@ -19,7 +19,7 @@ export function faixaEtapaCliente(
 ): FaixaEtapaCliente | null {
   if (status === 'aberto') {
     return {
-      tom: 'aberto',
+      variante: 'aberto',
       frase: 'Recebemos seu chamado. Um consultor vai assumir em breve.',
     }
   }
@@ -27,17 +27,17 @@ export function faixaEtapaCliente(
     const frase = nomeResponsavel
       ? `${nomeResponsavel} está cuidando do seu chamado.`
       : 'Um consultor está cuidando do seu chamado.'
-    return { tom: 'aberto', frase }
+    return { variante: 'aberto', frase }
   }
   if (status === 'aguardando_cliente') {
     return {
-      tom: 'aguardando',
+      variante: 'aguardando',
       frase: 'Precisamos de uma resposta sua para continuar.',
     }
   }
   if (status === 'resolvido') {
     return {
-      tom: 'resolvido',
+      variante: 'resolvido',
       frase: 'Resolvido. Confirme se está tudo certo ou reabra se precisar.',
     }
   }
