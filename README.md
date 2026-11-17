@@ -107,6 +107,14 @@ Nas listas (indicador ou consultor) dá para filtrar por **Todos**, **Em risco**
 
 Consultor ocioso é quem não tem chamado ativo atribuído. O painel não calcula carga nem marca alguém como sobrecarregado.
 
+Com a tela do gestor aberta, a equipe recebe as mesmas novidades nos dois grupos, sem recarregar:
+
+- a cada 7 segundos, um chamado novo sem responsável entra num grupo sorteado da equipe;
+- a cada 12 segundos, uma mensagem de cliente chega num chamado ativo de alguém da equipe (nunca no chamado aberto na conversa);
+- a cada 14 segundos, o status de outro chamado ativo da equipe muda, com o motivo “Simulação da fila.”.
+
+Sair da tela interrompe esses disparos. Não há marcador de não lido: contagens, listas e conversa acompanham o que já está na sessão.
+
 ## Status e prazo
 
 Um chamado percorre estes status:

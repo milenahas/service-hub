@@ -14,7 +14,7 @@
 | **Rota** | `/gestor` (`CAMINHOS.gestor`) — guard `perfil === 'gestor'`. As três telas encadeadas são **vistas** dessa rota, não rotas novas |
 | **Persona** | `gestor` → Ricardo Monteiro (`875d257a-0dff-4428-a233-5332d0e67b86`, `locale` pt-BR, `America/Sao_Paulo`) |
 | **Conformidade a11y** | WCAG 2.1 AA; indicadores e “Conversa” são botões; selects com nome acessível; erro/vazio em texto no fluxo |
-| **Fora do escopo** | API, WebSocket, toasts, modais, ícones decorativos, persistência, rotinas cliente/consultor, timer de simulação do consultor, coluna “carga”, estado “sobrecarregado”, indicador “Escalados pelo cliente” |
+| **Fora do escopo** | API, WebSocket real, toasts, modais, ícones decorativos, persistência, rotinas cliente/consultor, coluna “carga”, estado “sobrecarregado”, indicador “Escalados pelo cliente”, marcador de não lido |
 
 ### Referência visual obrigatória (MUST)
 
@@ -115,6 +115,22 @@ Não inventar soma semanal. O rótulo “Ocioso na semana” é o do print; o va
 `pegarChamado` grava o **usuário logado** como responsável. No gestor isso atribuiria o chamado ao Ricardo. Não usar.
 
 Acrescentar `atribuirChamado(chamadoId, consultorId)` em `app/store.ts`: emite `chamado.atribuido` com `consultor_id` escolhido e `ocorrido_em = meta.agora`. O redutor existente seta `responsavel_id`, promove `aberto` → `em_atendimento` e gera a mensagem de sistema. Nota continua em `salvarNotaInterna`.
+
+### 5.3 Simulação ao vivo
+
+Enquanto `TelaGestor` está montada, `iniciarSimulacaoGestor` dispara os mesmos ciclos da fila do consultor. Tudo entra por `aplicarEvento`. O timer para no unmount, no logout e numa sessão nova. A store guarda um controle só.
+
+| Intervalo | Evento | Universo |
+| --- | --- | --- |
+| 7s | `chamado.aberto` sem responsável | Grupo sorteado entre os grupos dos consultores de `consultoresEquipeGestor` |
+| 12s | `mensagem.adicionada` pública; autor = solicitante | Chamado ativo cujo responsável está na equipe |
+| 14s | `status.alterado`; autor = responsável; motivo **Simulação da fila.**; só entre status ativos | O mesmo universo da mensagem |
+
+O chamado da vista `conversa` fica fora da mensagem e do status. No dashboard, na lista e no detalhe do consultor o sorteio usa a equipe inteira. Chamado novo entra em qualquer vista. O carimbo é `meta.agora`.
+
+A tela não desenha o timer e não ganha marcador de não lido. Contagens, listas e conversa acompanham porque leem o tenant. Mensagem e status gravam atividade em `meta.agora`, então a ociosidade daquele consultor vai a **0h**. Chamado novo aumenta ativos e **Sem responsável**. O card de SLA não cresce com esses chamados: o prazo de resolução sorteado fica em 4h ou mais, e risco é o que vence em menos de 4h.
+
+Os disparos ficam em `dominio/simulacao-gestor.ts`. A tela publica o id da conversa; a store aplica o evento.
 
 ---
 
@@ -295,7 +311,7 @@ Salvar chama `salvarNotaInterna` e limpa o campo. Autor = gestor logado.
 - Checkbox “nota interna” na conversa.
 - Resposta pública do gestor ao cliente.
 - Toast, modal, ícone decorativo.
-- Timer 1–3 min (isso é da fila do consultor). A UI só reflete o tenant; se um evento entrar na store, contagens e listas acompanham porque são derivadas.
+- Marcador de não lido. A simulação ao vivo (§5.3) não desenha timer na tela; contagens, listas e conversa só refletem o tenant.
 
 ---
 
@@ -319,7 +335,12 @@ src/features/gestor/
   lista-chamados-gestor.test.ts
 ```
 
-`app/Rotas.tsx` passa a montar `TelaGestor` no lugar de `PlaceholderGestor`. `app/store.ts` ganha `atribuirChamado`. Cabeçalho: selo **Gestor** sem sufixo.
+`app/Rotas.tsx` passa a montar `TelaGestor` no lugar de `PlaceholderGestor`. `app/store.ts` ganha `atribuirChamado`, `iniciarSimulacaoGestor` e `pararSimulacaoGestor`. Cabeçalho: selo **Gestor** sem sufixo.
+
+```
+src/dominio/simulacao-gestor.ts       # ciclos da equipe; não desenha
+src/dominio/simulacao-gestor.test.ts
+```
 
 Não duplicar `ListaConversa`, selo de prazo, redutor de evento nem a pílula de filtro. O filtro é `GrupoChips` (`src/shared/components/Chip/`), especificado em [componente-chip.md](./componente-chip.md). Esta feature passa `opcoes`, `value` e `onChange`; não desenha chip.
 
@@ -339,6 +360,9 @@ Funções puras, com `meta.agora` fixo:
 | Histórico ausente | ociosidade **—** |
 | `interna: true` | fora da contagem “n mensagens” e fora da thread pública |
 | Primeiro nome | “Ricardo Monteiro” → “Ricardo” |
+| Chamado novo da simulação | sem responsável; grupo é um dos grupos da equipe |
+| Mensagem e status simulados | só chamado ativo com responsável na equipe; o chamado da conversa fica de fora |
+| `parar()` | novos disparos não entram |
 
 RTL da tela (tenant mínimo na store):
 
@@ -370,13 +394,14 @@ RTL da tela (tenant mínimo na store):
 7. [ ] Select de responsável e **Redistribuir para** emitem `chamado.atribuido` para o consultor escolhido.
 8. [ ] Nota interna não aparece na coluna “somente leitura”.
 9. [ ] Não há carga, sobrecarregado nem card extra.
+10. [ ] Com a tela aberta, os ciclos de §5.3 entram na store e a UI acompanha sem recarregar. Sair da tela para os disparos.
 
 ### Código
 
-10. [ ] `PlaceholderGestor` saiu da rota.
-11. [ ] Cálculos em `.ts` puro; JSX sem regra de prazo copiada. Filtros via `GrupoChips`, sem pílula local.
-12. [ ] JSDoc nos módulos da feature. Lint de sintaxe (`&&`, sem ternário no `.map()`, testes sem `if`).
-13. [ ] `lint`, `test` e `build` verdes.
+11. [ ] `PlaceholderGestor` saiu da rota.
+12. [ ] Cálculos em `.ts` puro; JSX sem regra de prazo copiada. Filtros via `GrupoChips`, sem pílula local.
+13. [ ] JSDoc nos módulos da feature. Lint de sintaxe (`&&`, sem ternário no `.map()`, testes sem `if`).
+14. [ ] `lint`, `test` e `build` verdes.
 
 ---
 
@@ -404,5 +429,5 @@ RTL da tela (tenant mínimo na store):
 | Responsável fora da equipe | Se o responsável atual não estiver em `consultoresEquipeGestor`, o select mostra esse nome e, além dele, a equipe da sessão. |
 | “Ocioso na semana” | Rótulo do print; valor = horas desde a última atividade, ou **—**. |
 | Rotas aninhadas | Não. Uma rota e vista local: F5 já desloga. |
-| Simulação ao vivo | Não nesta feature. |
+| Simulação ao vivo | Três ciclos na equipe, §5.3. A tela só reflete o tenant. |
 | Pílula de filtro | `GrupoChips` de [componente-chip.md](./componente-chip.md). Um valor por grupo. A feature não estiliza chip. |

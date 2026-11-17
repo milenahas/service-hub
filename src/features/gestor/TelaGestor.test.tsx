@@ -122,7 +122,15 @@ describe('TelaGestor', () => {
   })
 
   afterEach(() => {
+    useStore.getState().pararSimulacaoGestor()
     resetarStoreParaTestes()
+  })
+
+  it('liga a simulação ao montar a tela', () => {
+    const spy = vi.spyOn(useStore.getState(), 'iniciarSimulacaoGestor')
+    montar()
+    expect(spy).toHaveBeenCalled()
+    spy.mockRestore()
   })
 
   it('renderiza saudação, cards e cabeçalhos da equipe', () => {

@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CabecalhoApp } from '../../app/CabecalhoApp.tsx'
-import { useStore } from '../../app/store.ts'
+import { definirChamadoSelecionadoSimulacao, useStore } from '../../app/store.ts'
 import { Botao } from '../../shared/components/index.ts'
 import type { TenantSessao } from '../../dominio/snapshot.ts'
 import type { LinhaEquipeGestor } from './equipe-gestor.ts'
@@ -50,13 +50,17 @@ const OPCOES_ORDENACAO = [
  * Orquestra a rotina do gestor: dashboard da equipe, listas de indicador,
  * detalhe do consultor e conversa somente leitura. Mantém vista local, filtros
  * e origem do voltar; lê o tenant da store e dispara `atribuirChamado` e
- * `salvarNotaInterna`. Cálculos em módulos `.ts` vizinhos; desenho em painéis.
+ * `salvarNotaInterna`. Publica o chamado da conversa para a simulação ao vivo.
+ * Cálculos em módulos `.ts` vizinhos; desenho em painéis. Os disparos ficam em
+ * `simulacao-gestor.ts`; a store em `app/store.ts` guarda o id aberto e o tenant.
  */
 export function TelaGestor() {
   const usuario = useStore((e) => e.usuarioLogado)
   const tenant = useStore((e) => e.tenant)
   const atribuirChamado = useStore((e) => e.atribuirChamado)
   const salvarNotaInterna = useStore((e) => e.salvarNotaInterna)
+  const iniciarSimulacao = useStore((e) => e.iniciarSimulacaoGestor)
+  const pararSimulacao = useStore((e) => e.pararSimulacaoGestor)
 
   const [vista, setVista] = useState<VistaGestor>({ vista: 'equipe' })
   const [filtroEquipe, setFiltroEquipe] = useState<FiltroEquipeGestor>('todos')
@@ -100,6 +104,23 @@ export function TelaGestor() {
     const filtrados = filtrarChamadosGestor(base, filtroChamados, agora)
     return ordenarChamadosPorPrazo(filtrados)
   }, [tenant, vista, filtroChamados])
+
+  let chamadoAbertoId: string | null = null
+  if (vista.vista === 'conversa') {
+    chamadoAbertoId = vista.chamadoId
+  }
+
+  useEffect(() => {
+    definirChamadoSelecionadoSimulacao(chamadoAbertoId)
+  }, [chamadoAbertoId])
+
+  useEffect(() => {
+    iniciarSimulacao()
+    return () => {
+      pararSimulacao()
+      definirChamadoSelecionadoSimulacao(null)
+    }
+  }, [iniciarSimulacao, pararSimulacao])
 
   if (!usuario || !tenant || usuario.perfil !== 'gestor') {
     return null

@@ -10,6 +10,7 @@ import {
   iniciarSimulacaoConsultor,
   type ControleSimulacao,
 } from '../dominio/simulacao-consultor.ts'
+import { iniciarSimulacaoGestor } from '../dominio/simulacao-gestor.ts'
 import type { StatusChamado } from '../dominio/chamado.ts'
 import type { Usuario } from '../dominio/tipos.ts'
 
@@ -33,6 +34,8 @@ type EstadoStore = {
   abrirChamado: (titulo: string, descricao: string) => string | null
   iniciarSimulacaoConsultor: () => void
   pararSimulacaoConsultor: () => void
+  iniciarSimulacaoGestor: () => void
+  pararSimulacaoGestor: () => void
 }
 
 let controleSimulacao: ControleSimulacao | null = null
@@ -215,6 +218,7 @@ export const useStore = create<EstadoStore>((set, get) => ({
   iniciarSimulacaoConsultor: () => {
     const { usuarioLogado, aplicarEvento: aplicar } = get()
     if (!usuarioLogado || usuarioLogado.perfil !== 'consultor') return
+    pararSimulacaoInterna()
     controleSimulacao = iniciarSimulacaoConsultor(
       usuarioLogado,
       () => get().tenant,
@@ -224,6 +228,21 @@ export const useStore = create<EstadoStore>((set, get) => ({
   },
 
   pararSimulacaoConsultor: () => {
+    pararSimulacaoInterna()
+  },
+
+  iniciarSimulacaoGestor: () => {
+    const { usuarioLogado, aplicarEvento: aplicar } = get()
+    if (!usuarioLogado || usuarioLogado.perfil !== 'gestor') return
+    pararSimulacaoInterna()
+    controleSimulacao = iniciarSimulacaoGestor(
+      () => get().tenant,
+      (evento) => aplicar(evento),
+      { obterChamadoAbertoId: () => chamadoSelecionadoSimulacao },
+    )
+  },
+
+  pararSimulacaoGestor: () => {
     pararSimulacaoInterna()
   },
 }))
