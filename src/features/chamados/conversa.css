@@ -64,6 +64,17 @@
   word-break: break-word;
 }
 
+.balao__cabecalho {
+  margin: 0 0 0.2rem;
+  font-size: var(--texto-cabecalho-balao);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.balao__texto {
+  margin: 0;
+}
+
 .balao--cliente .balao__corpo {
   background: var(--conversa-cliente-fundo);
   color: var(--cor-texto-principal);

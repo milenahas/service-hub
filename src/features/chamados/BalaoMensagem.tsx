@@ -1,28 +1,25 @@
 import type { MensagemBruta } from '../../dominio/mensagem-campos.ts'
-import type { Usuario } from '../../dominio/tipos.ts'
 import { textoMensagem } from './regras/mensagens-chamado.ts'
-import { tipoVisualBalao } from './regras/tipo-visual-balao.ts'
+import type { TipoVisualBalao } from './regras/tipo-visual-balao.ts'
 import './conversa.css'
 
 type PropsBalaoMensagem = {
   mensagem: MensagemBruta
-  solicitanteId: string
-  usuarioLogado: Usuario
+  tipoVisual: TipoVisualBalao
+  cabecalho?: string
 }
 
 export function BalaoMensagem({
   mensagem,
-  solicitanteId,
-  usuarioLogado,
+  tipoVisual,
+  cabecalho,
 }: PropsBalaoMensagem) {
-  const tipoVisual = tipoVisualBalao(
-    mensagem.autor_id,
-    solicitanteId,
-    usuarioLogado,
-  )
   return (
     <div className={`balao balao--${tipoVisual}`}>
-      <div className="balao__corpo">{textoMensagem(mensagem)}</div>
+      <div className="balao__corpo">
+        {cabecalho && <p className="balao__cabecalho">{cabecalho}</p>}
+        <p className="balao__texto">{textoMensagem(mensagem)}</p>
+      </div>
     </div>
   )
 }

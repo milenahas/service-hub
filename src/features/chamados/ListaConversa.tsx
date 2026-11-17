@@ -1,6 +1,7 @@
 import type { HistoricoEntrada, Mensagem } from '../../dominio/snapshot.ts'
 import type { Usuario } from '../../dominio/tipos.ts'
 import { linhaTempoPublicaDoChamado } from './regras/linha-tempo-conversa.ts'
+import { tipoVisualBalao } from './regras/tipo-visual-balao.ts'
 import { BalaoMensagem } from './BalaoMensagem.tsx'
 import './conversa.css'
 
@@ -33,8 +34,11 @@ export function ListaConversa({
         <BalaoMensagem
           key={mensagem.id}
           mensagem={mensagem}
-          solicitanteId={solicitanteId}
-          usuarioLogado={usuarioLogado}
+          tipoVisual={tipoVisualBalao(
+            mensagem.autor_id,
+            solicitanteId,
+            usuarioLogado,
+          )}
         />
       ))}
     </div>
