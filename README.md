@@ -140,4 +140,38 @@ O id de cada evento fica guardado na sessão. Reaplicar o mesmo id não duplica 
 
 No login, a sessão recorta o snapshot: o cliente recebe os chamados em que é o solicitante; o consultor, todos os chamados do seu grupo; o gestor, os consultores dos dois grupos e os chamados desses grupos. Categorias, SLA, grupos e usuários permanecem inteiros. O que nasce depois (chamado aberto na hora, mensagem, histórico) existe só nessa sessão.
 
-Testes usam Vitest e React Testing Library (jsdom). O setup está em `src/setupTestes.ts`. Convenções de domínio e de código estão em [AGENTS.md](./AGENTS.md).
+## Dependências
+
+`npm install` ou `pnpm install` instala tudo o que está em `package.json`. As versões abaixo são as faixas declaradas nesse arquivo.
+
+A aplicação em execução usa quatro pacotes:
+
+| Pacote | Versão | Papel |
+| --- | --- | --- |
+| `react` | ^19.3.1 | Interface |
+| `react-dom` | ^19.3.1 | Renderização no navegador |
+| `react-router-dom` | ^7.18.5 | Rotas de login, cliente, consultor e gestor |
+| `zustand` | ^5.1.0 | Estado da sessão (usuário logado, chamados, eventos) |
+
+O restante entra só em desenvolvimento, teste e build:
+
+| Pacote | Versão | Papel |
+| --- | --- | --- |
+| `vite` | ^8.3.6 | Servidor de desenvolvimento e build |
+| `@vitejs/plugin-react` | ^6.1.2 | Suporte a React no Vite |
+| `typescript` | ~6.0.3 | Linguagem e checagem de tipos (`tsc -b`) |
+| `@types/node` | ^24.19.2 | Tipos do Node para o tooling |
+| `@types/react` | ^19.3.0 | Tipos do React |
+| `@types/react-dom` | ^19.3.0 | Tipos do React DOM |
+| `vitest` | ^5.1.0 | Testes (`npm test` / `pnpm test`) |
+| `jsdom` | ^29.1.1 | DOM simulado para os testes de tela |
+| `@testing-library/react` | ^16.3.3 | Renderização e interação nos testes |
+| `@testing-library/jest-dom` | ^7.0.1 | Asserções de DOM (`toBeInTheDocument` e afins) |
+| `eslint` | ^10.14.0 | Lint |
+| `@eslint/js` | ^10.0.1 | Regras base do ESLint |
+| `typescript-eslint` | ^8.72.1 | Regras de TypeScript no ESLint |
+| `eslint-plugin-react-hooks` | ^7.1.1 | Regras dos hooks do React |
+| `eslint-plugin-react-refresh` | ^0.5.7 | Regras do recarregamento do Vite |
+| `globals` | ^17.13.0 | Globais de ambiente usados na config do ESLint |
+
+O setup dos testes está em `src/setupTestes.ts`. Convenções de domínio e de código estão em [AGENTS.md](./AGENTS.md).
