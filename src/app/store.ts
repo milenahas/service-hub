@@ -43,6 +43,7 @@ let chamadoSelecionadoSimulacao: string | null = null
 
 export function definirChamadoSelecionadoSimulacao(id: string | null) {
   chamadoSelecionadoSimulacao = id
+  controleSimulacao?.definirChamadoSelecionado?.(id)
 }
 
 function limparChamadoSelecionadoSimulacao() {

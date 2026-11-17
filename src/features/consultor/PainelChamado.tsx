@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import type { Chamado, TenantSessao } from '../../dominio/snapshot.ts'
 import type { Usuario } from '../../dominio/tipos.ts'
 import { chamadoAtivo, classificarFaixaPrazo, formatarTextoPrazoConsultor } from '../../dominio/prazo.ts'
@@ -6,6 +6,7 @@ import { formatarDataHoraUsuario } from '../../dominio/formatar-data.ts'
 import { formatarRotuloStatus } from '../../dominio/rotulo-status.ts'
 import { selecionarTransicoesStatus } from '../../dominio/selecionar-transicoes-status.ts'
 import type { StatusChamado } from '../../dominio/chamado.ts'
+import { linhaTempoPublicaDoChamado } from '../chamados/regras/linha-tempo-conversa.ts'
 import { notasInternasDoChamado } from '../chamados/regras/mensagens-chamado.ts'
 import { BlocoDescricaoChamado } from '../chamados/BlocoDescricaoChamado.tsx'
 import { ListaConversa } from '../chamados/ListaConversa.tsx'
@@ -21,7 +22,8 @@ import {
  * Desenha o painel central da rotina do consultor: detalhe do chamado
  * selecionado na fila, mudança de status, conversa pública e rodapé
  * “Responder ao cliente…”. Inclui Pegar chamado, o form de status e o
- * botão Notas.
+ * botão Notas. Rola a conversa até a última linha ao abrir o chamado
+ * e quando entra linha nova nesse chamado.
  *
  * Salvar anotações internas fica em `PainelNotas.tsx`. Só guarda estado
  * do form de status; o resto vem de `TelaConsultor` e da store.
@@ -54,6 +56,22 @@ export function PainelChamado({
   const [statusAberto, setStatusAberto] = useState(false)
   const [novoStatus, setNovoStatus] = useState<StatusChamado | ''>('')
   const [motivo, setMotivo] = useState('')
+  const conversaRef = useRef<HTMLDivElement>(null)
+  const chamadoId = chamado?.id
+  const qtdLinhas = chamado
+    ? linhaTempoPublicaDoChamado(
+        tenant.mensagens,
+        tenant.historico,
+        chamado.id,
+        tenant.usuarios,
+      ).length
+    : 0
+
+  useLayoutEffect(() => {
+    const thread = conversaRef.current
+    if (!thread) return
+    thread.scrollTop = thread.scrollHeight
+  }, [qtdLinhas, chamadoId])
 
   if (!chamado) {
     return (
@@ -184,7 +202,7 @@ export function PainelChamado({
         </div>
       )}
 
-      <div className="painel-chamado__conversa">
+      <div className="painel-chamado__conversa" ref={conversaRef}>
         <BlocoDescricaoChamado descricao={chamado.descricao} />
         <ListaConversa
           mensagens={tenant.mensagens}

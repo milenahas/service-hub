@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { act, render, screen, fireEvent, within } from '@testing-library/react'
 import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { TelaConsultor } from './TelaConsultor.tsx'
@@ -100,6 +100,30 @@ describe('TelaConsultor', () => {
     expect(screen.getByText('Segredo da equipe')).toBeInTheDocument()
     const conversa = document.querySelector('.painel-chamado__conversa')
     expect(conversa?.textContent).not.toContain('Segredo da equipe')
+  })
+
+  it('rola a conversa até o fim e preserva o rascunho quando chega mensagem', () => {
+    montar()
+    const conversa = document.querySelector('.painel-chamado__conversa') as HTMLDivElement
+    Object.defineProperty(conversa, 'scrollHeight', {
+      configurable: true,
+      value: 480,
+    })
+    fireEvent.change(screen.getByLabelText('Responder ao cliente'), {
+      target: { value: 'Rascunho em andamento' },
+    })
+    const tenant = useStore.getState().tenant!
+    const usuario = useStore.getState().usuarioLogado!
+    const primeiro = montarSecoesFilaVisivel(tenant, usuario, 'minha', '', 'todos')[0]!
+      .chamados[0]!
+    act(() => {
+      useStore.getState().enviarMensagemCliente(primeiro.id, 'Chegou agora')
+    })
+    expect(conversa.scrollTop).toBe(480)
+    expect(screen.getByLabelText('Responder ao cliente')).toHaveValue(
+      'Rascunho em andamento',
+    )
+    expect(screen.getByText('Chegou agora')).toBeInTheDocument()
   })
 
   it('formulário de status exige motivo', () => {

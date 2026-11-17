@@ -23,6 +23,7 @@ export const relogioPadrao: Relogio = {
 const INTERVALO_CHAMADO_MS = 7_000
 const INTERVALO_MENSAGEM_MS = 12_000
 const INTERVALO_STATUS_MS = 14_000
+const INTERVALO_MENSAGEM_SELECIONADO_MS = 20_000
 
 const MOTIVO_STATUS_SIMULADO = 'Simulação da fila.'
 
@@ -135,6 +136,22 @@ function sortearChamado(
   return chamados[inteiroAleatorio(0, chamados.length - 1, aleatorio)]
 }
 
+/**
+ * Mensagem de cliente no chamado selecionado, se ele ainda está ativo.
+ * Sem seleção, ou com status resolvido/fechado, não há evento.
+ * O texto e o autor saem de `gerarMensagemSimulada`.
+ */
+export function gerarMensagemDoSelecionado(
+  tenant: TenantSessao,
+  chamadoSelecionadoId: string | null,
+  aleatorio: GeradorAleatorio = Math.random,
+): EventoMensagemAdicionada | null {
+  if (!chamadoSelecionadoId) return null
+  const chamado = tenant.chamados.find((c) => c.id === chamadoSelecionadoId)
+  if (!chamado || !chamadoAtivo(chamado.status)) return null
+  return gerarMensagemSimulada(tenant, chamado, aleatorio)
+}
+
 export function gerarMensagemSimulada(
   tenant: TenantSessao,
   chamado: Chamado,
@@ -186,6 +203,12 @@ export function gerarMudancaStatusSimulada(
 
 export type ControleSimulacao = {
   parar: () => void
+  definirChamadoSelecionado?: (id: string | null) => void
+}
+
+export type ControleSimulacaoConsultor = {
+  parar: () => void
+  definirChamadoSelecionado: (id: string | null) => void
 }
 
 type OpcoesSimulacao = {
@@ -194,16 +217,26 @@ type OpcoesSimulacao = {
   obterChamadoSelecionadoId?: () => string | null
 }
 
+/**
+ * Agenda chamado novo, mensagem e status na fila do consultor enquanto a
+ * tela está montada. A mensagem no chamado selecionado é um ciclo à parte,
+ * de 20s, que começa e recomeça em `definirChamadoSelecionado`. Não desenha:
+ * quem liga e desliga é `TelaConsultor.tsx`; a store em `app/store.ts`
+ * aplica o evento e publica o id selecionado.
+ */
 export function iniciarSimulacaoConsultor(
   consultor: Usuario,
   obterTenant: () => TenantSessao | null,
   aplicar: (evento: Evento) => void,
   opcoes: OpcoesSimulacao = {},
-): ControleSimulacao {
+): ControleSimulacaoConsultor {
   const relogio = opcoes.relogio ?? relogioPadrao
   const aleatorio = opcoes.aleatorio ?? Math.random
   const obterChamadoSelecionadoId = opcoes.obterChamadoSelecionadoId ?? (() => null)
   const timeouts: ReturnType<typeof globalThis.setTimeout>[] = []
+  let timeoutMensagemSelecionada: ReturnType<typeof globalThis.setTimeout> | null = null
+  let chamadoDoCiclo: string | null = null
+  let cicloSelecionadoArmado = false
   let ativa = true
 
   const agendar = (fn: () => void, ms: number) => {
@@ -239,6 +272,38 @@ export function iniciarSimulacaoConsultor(
     aplicar(evento)
   }
 
+  const cancelarMensagemSelecionada = () => {
+    if (timeoutMensagemSelecionada === null) return
+    relogio.clearTimeout(timeoutMensagemSelecionada)
+    timeoutMensagemSelecionada = null
+  }
+
+  const agendarMensagemSelecionada = () => {
+    cancelarMensagemSelecionada()
+    timeoutMensagemSelecionada = relogio.setTimeout(() => {
+      timeoutMensagemSelecionada = null
+      if (!ativa) return
+      const tenant = obterTenant()
+      if (tenant) {
+        const evento = gerarMensagemDoSelecionado(
+          tenant,
+          obterChamadoSelecionadoId(),
+          aleatorio,
+        )
+        if (evento) aplicar(evento)
+      }
+      if (ativa) agendarMensagemSelecionada()
+    }, INTERVALO_MENSAGEM_SELECIONADO_MS)
+  }
+
+  const definirChamadoSelecionado = (id: string | null) => {
+    if (!ativa) return
+    if (cicloSelecionadoArmado && id === chamadoDoCiclo) return
+    cicloSelecionadoArmado = true
+    chamadoDoCiclo = id
+    agendarMensagemSelecionada()
+  }
+
   agendarCiclo(INTERVALO_CHAMADO_MS, dispararChamado)
   agendarCiclo(INTERVALO_MENSAGEM_MS, () => {
     dispararNaFila((tenant, chamado) => gerarMensagemSimulada(tenant, chamado, aleatorio))
@@ -248,12 +313,14 @@ export function iniciarSimulacaoConsultor(
   })
 
   return {
+    definirChamadoSelecionado,
     parar: () => {
       ativa = false
       for (const id of timeouts) {
         relogio.clearTimeout(id)
       }
       timeouts.length = 0
+      cancelarMensagemSelecionada()
     },
   }
 }

@@ -87,6 +87,7 @@ Com a tela do consultor aberta, a fila recebe novidades sozinha, sem recarregar,
 
 - a cada 7 segundos, um chamado novo entra em **Sem dono** no grupo de quem está logado;
 - a cada 12 segundos, uma mensagem de cliente chega em outro chamado ativo da fila (nunca no que está aberto na hora);
+- a cada 20 segundos, uma mensagem de cliente chega no chamado aberto, se ele ainda está ativo. Trocar de chamado recomeça essa espera, e a conversa rola até a linha nova;
 - a cada 14 segundos, o status de outro chamado ativo muda, com o motivo “Simulação da fila.”.
 
 Sair da tela interrompe esses disparos. Aplicar de novo um evento que já entrou não duplica chamado, mensagem nem mudança de status.
@@ -98,7 +99,7 @@ A tela abre no painel da equipe, com a saudação, a data de referência, quanto
 Três cartões resumem o momento:
 
 - **SLA em até 4h** — chamados ativos estourados, com menos de uma hora ou dentro das próximas quatro horas. O clique abre a lista ordenada por urgência.
-- **Sem responsável** — ativos que ninguém pegou. O clique abre a lista para atribuir.
+- **Sem responsável** — chamados ativos que ninguém pegou. O clique abre a lista para atribuir.
 - **Ociosos agora** — consultores sem nenhum chamado ativo. O clique filtra a equipe por ociosos.
 
 A lista da equipe busca por nome, filtra por **Todos**, **Ociosos** ou **Com risco**, e ordena por chamados ativos, risco ou ociosidade. Cada linha mostra o grupo, quantos chamados ativos a pessoa tem, quantos estão em risco e há quanto tempo está ociosa na semana. **Ver chamados** abre os ativos daquele consultor, com os mesmos números no topo.
