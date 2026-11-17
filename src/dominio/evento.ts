@@ -22,7 +22,7 @@ export type EventoChamadoAtribuido = EventoBase & {
   tipo: 'chamado.atribuido'
   payload: {
     chamado_id: string
-    consultor_id: string
+    consultor_id: string | null
   }
 }
 

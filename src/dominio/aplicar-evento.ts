@@ -11,6 +11,7 @@ import { criarIdEvento } from './evento.ts'
 import {
   AUTOR_SISTEMA_ID,
   textoAtribuicao,
+  textoDesatribuicao,
   textoMudancaStatus,
 } from './mensagens-sistema.ts'
 import { formatarRotuloStatus } from './rotulo-status.ts'
@@ -93,6 +94,33 @@ function aplicarChamadoAtribuido(
   const chamado = fatia.chamados.find((item) => item.id === chamado_id)
   if (!chamado) {
     return fatia
+  }
+
+  if (consultor_id === null) {
+    if (chamado.responsavel_id === null) {
+      return fatia
+    }
+
+    const patch: Partial<Chamado> = {
+      responsavel_id: null,
+      atualizado_em: evento.ocorrido_em,
+    }
+    
+    if (chamado.status === 'em_atendimento') {
+      patch.status = 'aberto'
+    }
+
+    const msg = criarMensagemSistema(
+      chamado_id,
+      textoDesatribuicao(),
+      evento.ocorrido_em,
+    )
+
+    return {
+      chamados: atualizarChamado(fatia.chamados, chamado_id, patch),
+      mensagens: [...fatia.mensagens, msg],
+      historico: fatia.historico,
+    }
   }
 
   const patch: Partial<Chamado> = {

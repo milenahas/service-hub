@@ -82,6 +82,32 @@ describe('aplicarEvento', () => {
     expect(t.historico.some((h) => h.tipo === 'atribuicao')).toBe(true)
   })
 
+  it('desatribui consultor e volta em_atendimento para aberto', () => {
+    const eventos = new Set<string>()
+    const tenant = {
+      ...tenantBase,
+      chamados: [
+        {
+          ...tenantBase.chamados[0],
+          status: 'em_atendimento' as const,
+          responsavel_id: 'c1',
+        },
+      ],
+    }
+
+    const desatribuido = aplicarEvento(tenant, {
+      id: 'evt-d',
+      tipo: 'chamado.atribuido',
+      ocorrido_em: '2026-01-01T12:05:00Z',
+      payload: { chamado_id: 'ch1', consultor_id: null },
+    }, eventos)
+    expect(desatribuido.chamados[0].responsavel_id).toBeNull()
+    expect(desatribuido.chamados[0].status).toBe('aberto')
+    expect(
+      desatribuido.mensagens.some((m) => m.corpo === 'Chamado sem responsável'),
+    ).toBe(true)
+  })
+
   it('mensagem.adicionada ignora id duplicado', () => {
     const eventos = new Set<string>()
     const evento = {
