@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { snapshotInicial } from '../data/snapshot-inicial.ts'
+import { montarAberturaChamadoCliente } from '../dominio/abrir-chamado-cliente.ts'
 import { aplicarEvento as aplicarEventoDominio } from '../dominio/aplicar-evento.ts'
 import type { Evento } from '../dominio/evento.ts'
 import { criarIdEvento } from '../dominio/evento.ts'
@@ -29,6 +30,7 @@ type EstadoStore = {
     para: StatusChamado,
     motivo: string,
   ) => void
+  abrirChamado: (titulo: string, descricao: string) => string | null
   iniciarSimulacaoConsultor: () => void
   pararSimulacaoConsultor: () => void
 }
@@ -164,6 +166,39 @@ export const useStore = create<EstadoStore>((set, get) => ({
         usuario_id: usuarioLogado.id,
       },
     })
+  },
+
+  abrirChamado: (titulo, descricao) => {
+    const tituloLimpo = titulo.trim()
+    const descricaoLimpa = descricao.trim()
+    if (!tituloLimpo || !descricaoLimpa) return null
+    const { usuarioLogado, tenant, aplicarEvento: aplicar } = get()
+    if (!usuarioLogado || !tenant) return null
+    const abertura = montarAberturaChamadoCliente(
+      tenant,
+      usuarioLogado.id,
+      tituloLimpo,
+      descricaoLimpa,
+      {
+        chamadoId: criarIdEvento(),
+        mensagemId: criarIdEvento(),
+      },
+    )
+    if (!abertura) return null
+    const agora = agoraDoTenant(tenant)
+    aplicar({
+      id: criarIdEvento(),
+      tipo: 'chamado.aberto',
+      ocorrido_em: agora,
+      payload: abertura.chamado,
+    })
+    aplicar({
+      id: criarIdEvento(),
+      tipo: 'mensagem.adicionada',
+      ocorrido_em: agora,
+      payload: abertura.mensagem,
+    })
+    return abertura.chamado.id
   },
 
   iniciarSimulacaoConsultor: () => {
