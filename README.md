@@ -140,29 +140,4 @@ O id de cada evento fica guardado na sessão. Reaplicar o mesmo id não duplica 
 
 No login, a sessão recorta o snapshot: o cliente recebe os chamados em que é o solicitante; o consultor, todos os chamados do seu grupo; o gestor, os consultores dos dois grupos e os chamados desses grupos. Categorias, SLA, grupos e usuários permanecem inteiros. O que nasce depois (chamado aberto na hora, mensagem, histórico) existe só nessa sessão.
 
-## Para quem for alterar o código
-
-| Comando | Uso |
-| --- | --- |
-| `npm run dev` | Servidor de desenvolvimento |
-| `npm run lint` | ESLint |
-| `npm test` | Vitest, uma execução |
-| `npm run test:watch` | Vitest em modo observação |
-| `npm run build` | Checagem de tipos (`tsc -b`) e build do Vite |
-| `npm run preview` | Sobe o build de produção |
-
-Antes de considerar uma alteração pronta, deixe `npm run lint`, `npm test` e `npm run build` sem erro.
-
-| Pasta | Papel |
-| --- | --- |
-| `src/app/` | Rotas, guarda por perfil, cabeçalho e a store (Zustand) da sessão |
-| `src/features/autenticacao/` | Tela de login e o mapa dos quatro usuários |
-| `src/features/cliente/` | Lista, abertura e detalhe do cliente |
-| `src/features/consultor/` | Fila, detalhe, notas e o marcador de não lido |
-| `src/features/gestor/` | Indicadores, equipe, listas e conversa |
-| `src/features/chamados/` | Conversa, balão, descrição e regras de mensagem compartilhadas |
-| `src/dominio/` | Tipos, prazos, sessão, eventos, simulação da fila e abertura de chamado |
-| `src/data/` | Snapshot `dados.json` |
-| `src/shared/components/` | Botão, campos, selo e chip, sem regra de chamado |
-
 Testes usam Vitest e React Testing Library (jsdom). O setup está em `src/setupTestes.ts`. Convenções de domínio e de código estão em [AGENTS.md](./AGENTS.md).
