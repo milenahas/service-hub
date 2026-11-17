@@ -73,6 +73,6 @@ export type TenantSessao = {
   chamados: Chamado[]
   mensagens: Mensagem[]
   historico: HistoricoEntrada[]
-  /** Consultores sorteados no login do gestor (painel de equipe) */
+  /** Consultores da equipe na sessão do gestor (painel de equipe) */
   consultoresEquipeGestor?: string[]
 }

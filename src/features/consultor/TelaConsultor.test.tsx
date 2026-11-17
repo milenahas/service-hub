@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom'
 import { TelaConsultor } from './TelaConsultor.tsx'
 import { montarSecoesFilaVisivel } from './fila-consultor.ts'
 import { useStore, resetarStoreParaTestes } from '../../app/store.ts'
-import { criarGeradorComSemente } from '../../dominio/aleatorio.ts'
 import { montarSessao } from '../../dominio/montar-sessao.ts'
 import { snapshotInicial } from '../../data/snapshot-inicial.ts'
 
@@ -23,7 +22,7 @@ function montar() {
 describe('TelaConsultor', () => {
   beforeEach(() => {
     resetarStoreParaTestes()
-    const tenant = montarSessao(snapshotInicial, thiago, criarGeradorComSemente(42))
+    const tenant = montarSessao(snapshotInicial, thiago)
     useStore.setState({
       usuarioLogado: thiago,
       tenant,
