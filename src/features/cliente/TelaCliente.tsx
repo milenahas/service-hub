@@ -1,22 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CabecalhoApp } from '../../app/CabecalhoApp.tsx'
-import { useStore } from '../../app/store.ts'
+import { definirChamadoSelecionadoSimulacao, useStore } from '../../app/store.ts'
 import { ColunaMeusChamados } from './ColunaMeusChamados.tsx'
 import { FormularioNovoChamado } from './FormularioNovoChamado.tsx'
 import { PainelChamadoCliente } from './PainelChamadoCliente.tsx'
-import { ordenarChamadosCliente } from './lista-cliente.ts'
+import {
+  filtrarChamadosCliente,
+  ordenarChamadosCliente,
+} from './lista-cliente.ts'
+import { useNaoLidosCliente } from './usar-nao-lidos-cliente.ts'
 import './TelaCliente.css'
 
 /**
  * Orquestra a rotina do cliente: cabeçalho, lista dos próprios chamados
  * e o painel à direita (detalhe ou abertura). A entrada é o formulário
  * de novo chamado. Guarda a vista (`detalhe` ou `novo`), o chamado
- * selecionado e uma geração que zera o texto não enviado ao trocar de
- * item. Abrir, enviar e reabrir sobem para a store.
+ * selecionado, o texto da busca e uma geração que zera o texto não
+ * enviado ao trocar de item. Abrir com sucesso zera a busca. Enviar e
+ * reabrir sobem para a store. Liga a simulação
+ * de mensagens do consultor e publica o id da conversa aberta (nulo
+ * com o formulário). Limpa a bolinha ao selecionar o chamado.
  *
  * A lista fica em `ColunaMeusChamados.tsx`, o detalhe em
  * `PainelChamadoCliente.tsx` e o formulário em `FormularioNovoChamado.tsx`.
- * A ordem vem de `lista-cliente.ts`. Tenant e eventos ficam em `app/store.ts`.
+ * A ordem e o filtro vêm de `lista-cliente.ts`. Os ciclos ficam em
+ * `simulacao-cliente.ts`; a store em `app/store.ts` aplica o evento.
+ * Não lidos em `usar-nao-lidos-cliente.ts`.
  */
 export function TelaCliente() {
   const usuario = useStore((estado) => estado.usuarioLogado)
@@ -24,30 +33,50 @@ export function TelaCliente() {
   const enviarMensagemCliente = useStore((estado) => estado.enviarMensagemCliente)
   const alterarStatus = useStore((estado) => estado.alterarStatus)
   const abrirChamado = useStore((estado) => estado.abrirChamado)
+  const iniciarSimulacao = useStore((estado) => estado.iniciarSimulacaoCliente)
+  const pararSimulacao = useStore((estado) => estado.pararSimulacaoCliente)
 
   const [vista, setVista] = useState<'detalhe' | 'novo'>('novo')
   const [selecionadoId, setSelecionadoId] = useState<string | null>(null)
+  const [busca, setBusca] = useState('')
   const [geracao, setGeracao] = useState(0)
 
-  if (!usuario || !tenant || usuario.perfil !== 'cliente') {
+  const listaOrdenada = tenant ? ordenarChamadosCliente(tenant.chamados) : []
+  const listaVisivel = filtrarChamadosCliente(listaOrdenada, busca)
+  const idAindaNaLista = listaOrdenada.find((chamado) => chamado.id === selecionadoId)?.id
+  const idPersistido = idAindaNaLista ?? listaOrdenada[0]?.id ?? null
+  const idConversa = vista === 'novo' ? null : idPersistido
+  const { naoLidos, limparNaoLido } = useNaoLidosCliente(tenant, idConversa)
+
+  useEffect(() => {
+    iniciarSimulacao()
+    return () => {
+      pararSimulacao()
+      definirChamadoSelecionadoSimulacao(null)
+    }
+  }, [iniciarSimulacao, pararSimulacao])
+
+  useEffect(() => {
+    definirChamadoSelecionadoSimulacao(idConversa)
+  }, [idConversa])
+
+  if (!usuario || !tenant) {
     return null
   }
 
-  const lista = ordenarChamadosCliente(tenant.chamados)
-  const idAindaNaLista = lista.find((chamado) => chamado.id === selecionadoId)?.id
-  const idPersistido = idAindaNaLista ?? lista[0]?.id ?? null
-  const chamado = lista.find((item) => item.id === idPersistido)
-  const idNaLista = vista === 'novo' ? null : idPersistido
+  const chamado = listaOrdenada.find((item) => item.id === idPersistido)
 
   function aoSelecionar(id: string) {
     setSelecionadoId(id)
     setVista('detalhe')
     setGeracao((valor) => valor + 1)
+    limparNaoLido(id)
   }
 
   function aoEnviarNovo(titulo: string, descricao: string) {
     const id = abrirChamado(titulo, descricao)
     if (!id) return
+    setBusca('')
     setSelecionadoId(id)
     setVista('detalhe')
   }
@@ -57,11 +86,15 @@ export function TelaCliente() {
       <CabecalhoApp rotuloPerfil="" />
       <main className="tela-cliente__grade">
         <ColunaMeusChamados
-          chamados={lista}
+          chamados={listaVisivel}
+          busca={busca}
+          temChamados={listaOrdenada.length > 0}
           agora={tenant.meta.agora}
           usuario={usuario}
-          selecionadoId={idNaLista}
+          selecionadoId={idConversa}
+          naoLidos={naoLidos}
           formularioAberto={vista === 'novo'}
+          aoMudarBusca={setBusca}
           aoSelecionar={aoSelecionar}
           aoAbrirFormulario={() => setVista('novo')}
         />

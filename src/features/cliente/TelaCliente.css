@@ -75,13 +75,28 @@
 }
 
 .cartao-chamado-cliente__titulo {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
   font-weight: 600;
   font-size: var(--texto-corpo);
   color: var(--cor-texto-principal);
+}
+
+.cartao-chamado-cliente__titulo-texto {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+}
+
+.cartao-chamado-cliente__nao-lido {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
 }
 
 .cartao-chamado-cliente__linha {

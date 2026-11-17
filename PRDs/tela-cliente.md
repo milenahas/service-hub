@@ -84,7 +84,7 @@ Objetivos mensuráveis:
 | K12 | **Conversa dois lados (eu × suporte).** `tipoVisualBalao` do consultor pinta o solicitante como cinza à esquerda — **errado** para o cliente logado. Não passar `perfil` para o mapper compartilhado (`AGENTS.md`: se o compartilhado precisar parâmetro por perfil, **separar**). Ver §10.1. |
 | K13 | **Sem dependência nova.** Sem toast. Feedback: botão `disabled`, texto no rodapé, seleção do chamado recém-criado. |
 | K14 | **Tokens, não hex.** Cores e tipo vêm de [cores-globais-e-tipografia.md](./cores-globais-e-tipografia.md). Hex só se um token ainda não existir — aí o token nasce em `shared/estilos`, não solto no CSS da feature. |
-| K15 | **Só o que o produto usa agora.** Sem busca na lista, sem abas, sem chips, sem deep link `/cliente/:id` (F5 já desloga). |
+| K15 | **Só o que o produto usa agora.** Busca na lista por título e número. Sem abas, sem chips, sem deep link `/cliente/:id` (F5 já desloga). |
 | K16 | **Estrutura plana.** Nada de `features/cliente/components/ui/...`. Um nível de arquivos na pasta da feature. |
 
 ---
@@ -157,14 +157,14 @@ Não usar `pegarChamado` nem `atribuirChamado` nesta feature.
 
 ## 6. Navegação da vista
 
-Uma rota. Estado **local** em `TelaCliente` (não vai para a store):
+Uma rota. Estado **local** em `TelaCliente` (não vai para a store): vista, chamado selecionado e texto da busca.
 
 | Vista | Como abre | Como sai |
 | --- | --- | --- |
 | `detalhe` | Clique num item da lista; **Cancelar** no formulário | — |
 | `novo` | Default ao entrar; botão **+ Novo chamado** | **Cancelar**, ou submit com sucesso (volta a `detalhe` no chamado criado) |
 
-`chamadoSelecionadoId`: ao entrar, nenhum. Clique na lista atualiza. Abrir o formulário **não** apaga o id anterior (Cancelar restaura o detalhe desse id; se ainda não houve seleção, o primeiro da lista ordenada). Enquanto `vista === 'novo'`, **nenhum** cartão da lista fica selecionado (print Tela 6).
+`chamadoSelecionadoId`: ao entrar, nenhum. Clique na lista atualiza. Abrir o formulário **não** apaga o id anterior (Cancelar restaura o detalhe desse id; se ainda não houve seleção, o primeiro da lista ordenada). Enquanto `vista === 'novo'`, **nenhum** cartão da lista fica selecionado (print Tela 6). Digitar na busca **não** muda o id nem a vista: se o termo esconde o cartão aberto, o painel continua nele.
 
 Não há rotas aninhadas. F5 desloga.
 
@@ -179,7 +179,7 @@ Não há rotas aninhadas. F5 desloga.
 | Fundo | `--cor-fundo-pagina` (`#F1F5F9`) |
 | Shell | Coluna: `CabecalhoApp` + grade. Altura útil `calc(100vh - altura do cabeçalho)` — a **página não rola**; lista e histórico rolam por dentro |
 | Grade | `minmax(280px, 360px) minmax(0, 1fr)`, `gap` ~16px, padding ~16–20px |
-| Coluna esquerda | **Não** é um cartão branco único (diferente da Fila do consultor). Botão + rótulo + **cartões soltos** sobre o fundo da página |
+| Coluna esquerda | **Não** é um cartão branco único (diferente da Fila do consultor). Botão + rótulo + busca + **cartões soltos** sobre o fundo da página |
 | Painel direito | Um cartão `--cor-superficie`, raio **16px**, padding 20–24px; flex coluna; `min-height: 0` |
 
 Por volta de ~720px a grade **pode** empilhar (lista em cima, detalhe embaixo), cada uma com scroll próprio. Não inventar menu hamburger.
@@ -192,13 +192,14 @@ Por volta de ~720px a grade **pode** empilhar (lista em cima, detalhe embaixo), 
 
 1. **Botão** `primario` `bloco`: **+ Novo chamado**. Continua primário com o formulário aberto (`aria-pressed` quando `vista === 'novo'`).
 2. Rótulo **MEUS CHAMADOS** — `--texto-rotulo-secao` (12px / 600, uppercase, `--cor-texto-secundario`).
-3. Lista, **mais recentes primeiro** por `aberto_em` decrescente (CONTEXTO §6). Empate: `numero` decrescente.
-4. Cada item é `<button type="button">` (cartão):
+3. **Busca** `CampoTexto`, largura da coluna, no `gap` de 12px que a coluna já tem. `id="busca-meus-chamados"`, rótulo e placeholder **Buscar chamado** (mesmo campo da fila do consultor). Filtra a cada tecla por trecho do título ou do número (`42` ou `#42`), sem diferenciar maiúsculas; espaços nas pontas saem. Termo vazio mostra a lista inteira, na ordem do item abaixo. O termo fica no estado local (sai no logout e no F5). Abrir ou cancelar **+ Novo chamado** não apaga o termo. Submit com sucesso zera o campo; se `abrirChamado` não cria, o termo permanece.
+4. Lista, **mais recentes primeiro** por `aberto_em` decrescente (CONTEXTO §6). Empate: `numero` decrescente.
+5. Cada item é `<button type="button">` (cartão):
    - Fundo branco; raio **14px**; padding ~12–14px 16px; hover `--cor-hover-linha` / `#F1F5F9`; selecionado `--cor-selecao` (`#E8F2FF`).
    - Título 600 14px, ellipsis, `--cor-texto-principal`.
    - Linha inferior: **Selo** `status-preenchido` à esquerda (`formatarRotuloStatus`) + texto de prazo à direita (12–13px, secundário), conforme §5.2.
-5. Vazio: **Você ainda não abriu chamados.**
-6. Scroll da lista: barra fina (mesmo critério da fila do consultor, tokens `--cor-texto-terciario`).
+6. Vazio: sem chamados do cliente, **Você ainda não abriu chamados.** — também com texto no campo. Com chamados e nenhum no termo, **Nenhum chamado encontrado.** O painel da direita não muda por causa da busca.
+7. Scroll da lista: barra fina (mesmo critério da fila do consultor, tokens `--cor-texto-terciario`).
 
 **Proibido no cartão:** prioridade, grupo, categoria, ponto de não-lido de consultor, faixa vermelha de SLA, “Sem responsável” azul da fila.
 
@@ -278,7 +279,7 @@ Substitui o painel direito (a lista permanece).
 | Descrição | **CampoTextarea** `rotulo="Descrição"`, `rows={5}`, placeholder **O que você estava fazendo e o que apareceu na tela?** |
 | Ações | à direita: **Cancelar** (`secundario`) · **Enviar chamado** (`primario`, `disabled` até os dois trim ≠ `''`) |
 
-Submit → `abrirChamado` → `vista = 'detalhe'` e `chamadoSelecionadoId` = id novo (topo da lista). Sem toast.
+Submit com sucesso → `abrirChamado` → `vista = 'detalhe'`, `chamadoSelecionadoId` = id novo (topo da lista) e a busca zera. Sem toast. Se a criação não acontece, a vista e o termo ficam.
 
 **Proibido no formulário:** select de categoria, grupo, prioridade, SLA, anexos.
 
@@ -291,6 +292,7 @@ Submit → `abrirChamado` → `vista = 'detalhe'` e `chamadoSelecionadoId` = id 
 - Entrar na rota: primeiro chamado da lista ordenada, se houver.
 - Lista vazia: não quebra; CTA é **+ Novo chamado**.
 - Selecionar item: fecha form de reabertura e form de novo chamado.
+- A busca só esconde cartões. O chamado aberto permanece no painel quando o termo o tira da lista; ao apagar o termo, o cartão volta marcado.
 
 ### 8.2 Enviar mensagem
 
@@ -300,7 +302,7 @@ Submit → `abrirChamado` → `vista = 'detalhe'` e `chamadoSelecionadoId` = id 
 
 ### 8.3 Abrir chamado
 
-Ver §5.3. Depois do sucesso, o item novo aparece no topo **sem F5**.
+Ver §5.3. Depois do sucesso, o item novo aparece no topo **sem F5** e a busca zera.
 
 ### 8.4 Reabrir
 
@@ -329,6 +331,8 @@ A UI é derivada. Testes RTL **devem** chamar `aplicarEvento` / `atribuirChamado
 | Sair | Sair |
 | Botão lista | + Novo chamado |
 | Rótulo lista | MEUS CHAMADOS |
+| Busca (rótulo e placeholder) | Buscar chamado |
+| Busca sem resultado | Nenhum chamado encontrado. |
 | Lista vazia | Você ainda não abriu chamados. |
 | Sem dono (painel) | Aguardando um consultor pegar |
 | Lista `aguardando_cliente` | Aguardando você |
@@ -384,7 +388,7 @@ src/
       PainelChamadoCliente.tsx
       FormularioNovoChamado.tsx
       RodapeMensagemCliente.tsx      # textarea + Enviar / rodapé concluído + reabrir
-      lista-cliente.ts               # ordenar lista; não desenha
+      lista-cliente.ts               # ordenar e filtrar a lista; não desenha
       texto-prazo-cliente.ts         # lista + resposta prevista
       faixa-etapa-cliente.ts         # frase e se há faixa; não desenha
       tipo-visual-balao-cliente.ts   # eu × suporte × sistema
@@ -465,6 +469,7 @@ RTL da tela (Leandro na store via `iniciarSessao` **ou** tenant mínimo):
 7. **Cancelar** no form novo volta ao detalhe anterior.
 8. Depois do render, `aplicarEvento` de `chamado.atribuido` no chamado aberto de teste atualiza responsável e faixa **sem** remount.
 9. Reaplicar o mesmo `evento.id` não duplica linha do HISTÓRICO.
+10. A busca filtra por título e número; esconder o cartão aberto não troca o painel; lista sem chamados continua **Você ainda não abriu chamados.**; termo sem acerto mostra **Nenhum chamado encontrado.** Abrir ou cancelar o formulário mantém o termo; submit com sucesso zera.
 
 Atualizar `Rotas.tsx` / testes de rota se ainda procurarem “Área do cliente”.
 
@@ -483,7 +488,7 @@ Atualizar `Rotas.tsx` / testes de rota se ainda procurarem “Área do cliente�
 
 ### Funcional
 
-7. [ ] Lista = todos os chamados do solicitante na sessão, ordenados por `aberto_em`.
+7. [ ] Lista = todos os chamados do solicitante na sessão, ordenados por `aberto_em`. A busca abaixo de **MEUS CHAMADOS** recorta por título e número sem trocar o chamado aberto; o termo zera só quando a abertura cria o chamado.
 8. [ ] Relógio = `meta.agora`. Datas no `zoneinfo` do usuário.
 9. [ ] Cliente não vê categoria, grupo, prioridade, SLA interno nem `interna: true`.
 10. [ ] Abrir chamado emite `chamado.aberto` + primeira `mensagem.adicionada`; prioridade media; sem dono; grupo Infraestrutura.
@@ -531,6 +536,7 @@ Atualizar `Rotas.tsx` / testes de rota se ainda procurarem “Área do cliente�
 | CONTEXTO “SLA 8h” vs tabela `sla` | Tabela vence: media = 8h primeira resposta / 24h resolução (`AGENTS.md`) |
 | Label visível no textarea do detalhe | Print não mostra label; acessibilidade exige nome. Rótulo curto **Mensagem** se o Campo obrigar label visível |
 | Deep link `/cliente/:id` | Não. Estado local |
+| Busca do cliente | Título e número, mesmo critério da fila (sem nome do solicitante). Campo vazio mostra todos. Digitar não troca o painel. Sucesso em **Enviar chamado** zera o termo |
 | Página rola vs colunas rolam | Colunas rolam; página não (mesmo espírito do consultor, volume maior que o print) |
 | Cabeçalho no balão do consultor | Opcional neste PRD (`cabecalho` omitido = visual atual) |
 

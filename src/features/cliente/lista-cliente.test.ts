@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { Chamado } from '../../dominio/snapshot.ts'
-import { ordenarChamadosCliente } from './lista-cliente.ts'
+import {
+  filtrarChamadosCliente,
+  ordenarChamadosCliente,
+} from './lista-cliente.ts'
+
+function chamadoComTitulo(numero: number, titulo: string): Chamado {
+  return { ...chamado(numero, '2026-11-01T00:00:00Z'), titulo }
+}
 
 function chamado(numero: number, abertoEm: string): Chamado {
   return {
@@ -34,5 +41,50 @@ describe('ordenarChamadosCliente', () => {
       5, 2, 1,
     ])
     expect(lista.map((item) => item.numero)).toEqual([1, 2, 5])
+  })
+})
+
+const amostra = [
+  chamadoComTitulo(10, 'Rede lenta'),
+  chamadoComTitulo(42, 'Porta bloqueada'),
+]
+
+describe('filtrarChamadosCliente', () => {
+  it('termo vazio ou só espaços devolve a lista na mesma ordem', () => {
+    expect(filtrarChamadosCliente(amostra, '   ').map((item) => item.numero)).toEqual([
+      10, 42,
+    ])
+  })
+
+  it.each([
+    ['rede', [10]],
+    ['PORTA', [42]],
+    ['#42', [42]],
+    ['42', [42]],
+    ['10', [10]],
+    ['4', [42]],
+    ['zzz', []],
+    ['leandro', []],
+  ])('termo %s fica com os números %j', (termo, numeros) => {
+    expect(filtrarChamadosCliente(amostra, termo).map((item) => item.numero)).toEqual(
+      numeros,
+    )
+  })
+
+  it('cerquilha sozinha encontra todos pelo número', () => {
+    expect(filtrarChamadosCliente(amostra, '#').map((item) => item.numero)).toEqual([
+      10, 42,
+    ])
+  })
+
+  it('mantém a ordem recebida e o array original', () => {
+    const lista = [
+      chamadoComTitulo(42, 'Porta bloqueada'),
+      chamadoComTitulo(10, 'Rede lenta'),
+    ]
+    expect(filtrarChamadosCliente(lista, 'a').map((item) => item.numero)).toEqual([
+      42, 10,
+    ])
+    expect(lista.map((item) => item.numero)).toEqual([42, 10])
   })
 })

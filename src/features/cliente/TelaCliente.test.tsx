@@ -1,5 +1,5 @@
 import { act, render, screen, fireEvent, within } from '@testing-library/react'
-import { beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { TelaCliente } from './TelaCliente.tsx'
 import { resetarStoreParaTestes, useStore } from '../../app/store.ts'
@@ -319,6 +319,144 @@ describe('TelaCliente', () => {
       useStore.getState().aplicarEvento(evento)
     })
     expect(screen.getAllByText('Chamado atribuído a Juliana Pereira')).toHaveLength(1)
+  })
+
+  it('acende a bolinha no chamado que recebe mensagem fora da conversa', () => {
+    vi.useFakeTimers()
+    try {
+      montar()
+      act(() => {
+        vi.advanceTimersByTime(12_000)
+      })
+      const comNovidade = screen.getAllByRole('button', { name: /Não lido/ })
+      expect(comNovidade.length).toBeGreaterThan(0)
+      fireEvent.click(comNovidade[0]!)
+      expect(screen.queryByRole('button', { name: /Não lido/ })).not.toBeInTheDocument()
+      act(() => {
+        vi.advanceTimersByTime(20_000)
+      })
+      expect(screen.getAllByText(/Mensagem simulada do consultor/).length).toBeGreaterThan(0)
+      expect(
+        document.querySelector('.cartao-chamado-cliente--selecionado .cartao-chamado-cliente__nao-lido'),
+      ).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('coloca a busca abaixo de meus chamados', () => {
+    montar()
+    const coluna = screen.getByRole('region', { name: 'MEUS CHAMADOS' })
+    const rotulo = within(coluna).getByText('MEUS CHAMADOS')
+    const campo = within(coluna).getByLabelText('Buscar chamado')
+    expect(rotulo.nextElementSibling).toContainElement(campo)
+    expect(campo).toHaveAttribute('placeholder', 'Buscar chamado')
+    expect(rotulo.nextElementSibling?.nextElementSibling).toHaveClass(
+      'coluna-meus-chamados__lista',
+    )
+  })
+
+  it('filtra a lista e mantém o chamado aberto', () => {
+    montar()
+    fireEvent.click(
+      screen.getByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    )
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: 'vpn' },
+    })
+    expect(
+      screen.queryByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /VPN cai a cada 10 minutos/ }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Porta 443 bloqueada para fornecedor' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { current: true })).not.toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: '' },
+    })
+    expect(
+      screen.getByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    ).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('avisa quando a busca não encontra e preserva o painel', () => {
+    montar()
+    fireEvent.click(screen.getByRole('button', { name: /Erro ao fechar o mês/ }))
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: 'zzz' },
+    })
+    expect(screen.getByText('Nenhum chamado encontrado.')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Erro ao fechar o mês' }),
+    ).toBeInTheDocument()
+  })
+
+  it('mantém o vazio de quem não abriu chamado mesmo com busca', () => {
+    const tenant = useStore.getState().tenant!
+    useStore.setState({ tenant: { ...tenant, chamados: [] } })
+    montar()
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: 'vpn' },
+    })
+    expect(screen.getByText('Você ainda não abriu chamados.')).toBeInTheDocument()
+    expect(screen.queryByText('Nenhum chamado encontrado.')).not.toBeInTheDocument()
+  })
+
+  it('mantém a busca ao abrir e cancelar o formulário', () => {
+    montar()
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: 'vpn' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: '+ Novo chamado' }))
+    expect(screen.getByLabelText('Buscar chamado')).toHaveValue('vpn')
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
+    expect(screen.getByLabelText('Buscar chamado')).toHaveValue('vpn')
+    expect(
+      screen.getByRole('heading', { name: 'Porta 443 bloqueada para fornecedor' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('zera a busca quando o chamado novo é criado', () => {
+    montar()
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: 'vpn' },
+    })
+    fireEvent.change(screen.getByLabelText('Assunto'), {
+      target: { value: 'Teclado falhou' },
+    })
+    fireEvent.change(screen.getByLabelText('Descrição'), {
+      target: { value: 'Não digita' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Enviar chamado' }))
+    expect(screen.getByLabelText('Buscar chamado')).toHaveValue('')
+    expect(screen.getByRole('button', { name: /Teclado falhou/ })).toHaveAttribute(
+      'aria-current',
+      'true',
+    )
+  })
+
+  it('mantém a busca quando a abertura não cria o chamado', () => {
+    montar()
+    fireEvent.change(screen.getByLabelText('Buscar chamado'), {
+      target: { value: 'vpn' },
+    })
+    useStore.setState({ abrirChamado: () => null })
+    fireEvent.change(screen.getByLabelText('Assunto'), {
+      target: { value: 'Teclado falhou' },
+    })
+    fireEvent.change(screen.getByLabelText('Descrição'), {
+      target: { value: 'Não digita' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Enviar chamado' }))
+    expect(screen.getByLabelText('Buscar chamado')).toHaveValue('vpn')
+    expect(screen.queryByRole('heading', { name: 'Teclado falhou' })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Abrir chamado' })).toBeInTheDocument()
   })
 
   it('mostra o vazio na lista e o formulário de abertura', () => {

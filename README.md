@@ -51,6 +51,7 @@ Datas são gravadas em UTC e exibidas no fuso de quem está logado. Cliente usa 
 A tela tem a lista de chamados à esquerda e o chamado selecionado à direita.
 
 - A lista traz só os chamados de Leandro, do mais recente para o mais antigo. Cada item mostra o número do chamado (`#1234`), o título, uma frase de prazo e o status.
+- Abaixo de **Meus chamados**, a busca filtra por um trecho do título ou do número (`42` ou `#42`) a cada tecla. O campo vazio mostra todos. Sem chamado no termo, a lista diz **Nenhum chamado encontrado.** Digitar não troca o chamado aberto à direita. Abrir ou cancelar um chamado novo deixa o termo; enviar com sucesso zera a busca e o chamado novo aparece selecionado.
 - O prazo fala a língua de quem espera resposta: **Resposta até HH:MM** enquanto o prazo de primeira resposta ainda não passou, **Resposta em breve** depois disso, **Aguardando você** quando o suporte pediu um retorno. Chamado resolvido ou fechado não mostra contagem de atraso.
 - No detalhe, uma faixa resume a etapa: recebido e à espera de um consultor, em atendimento (com o nome de quem assumiu), aguardando uma resposta sua, ou resolvido. Chamado fechado não exibe essa faixa.
 - A conversa mostra só o que é público: mensagens e avisos de sistema (atribuição e mudança de status). Anotação interna não entra na lista, no detalhe nem em contagem.
