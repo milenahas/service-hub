@@ -6,7 +6,7 @@ import { RotaPublica } from './RotaPublica.tsx'
 import { TelaLogin } from '../features/autenticacao/TelaLogin.tsx'
 import { PlaceholderCliente } from '../features/cliente/PlaceholderCliente.tsx'
 import { TelaConsultor } from '../features/consultor/TelaConsultor.tsx'
-import { PlaceholderGestor } from '../features/gestor/PlaceholderGestor.tsx'
+import { TelaGestor } from '../features/gestor/TelaGestor.tsx'
 
 export const definicaoRotas: RouteObject[] = [
   {
@@ -41,7 +41,7 @@ export const definicaoRotas: RouteObject[] = [
     children: [
       {
         path: CAMINHOS.gestor,
-        element: <PlaceholderGestor />,
+        element: <TelaGestor />,
       },
     ],
   },
