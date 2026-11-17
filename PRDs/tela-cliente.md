@@ -161,10 +161,10 @@ Uma rota. Estado **local** em `TelaCliente` (não vai para a store):
 
 | Vista | Como abre | Como sai |
 | --- | --- | --- |
-| `detalhe` | Default ao entrar; clique num item da lista | — |
-| `novo` | Botão **+ Novo chamado** | **Cancelar**, ou submit com sucesso (volta a `detalhe` no chamado criado) |
+| `detalhe` | Clique num item da lista; **Cancelar** no formulário | — |
+| `novo` | Default ao entrar; botão **+ Novo chamado** | **Cancelar**, ou submit com sucesso (volta a `detalhe` no chamado criado) |
 
-`chamadoSelecionadoId`: default = primeiro da lista ordenada. Clique na lista atualiza. Abrir o formulário **não** apaga o id anterior (Cancelar restaura o detalhe desse id). Enquanto `vista === 'novo'`, **nenhum** cartão da lista fica selecionado (print Tela 6).
+`chamadoSelecionadoId`: ao entrar, nenhum. Clique na lista atualiza. Abrir o formulário **não** apaga o id anterior (Cancelar restaura o detalhe desse id; se ainda não houve seleção, o primeiro da lista ordenada). Enquanto `vista === 'novo'`, **nenhum** cartão da lista fica selecionado (print Tela 6).
 
 Não há rotas aninhadas. F5 desloga.
 
@@ -456,7 +456,7 @@ Funções puras com `meta.agora` fixo (`2026-11-03T13:00:00Z` ou fixture):
 
 RTL da tela (Leandro na store via `iniciarSessao` **ou** tenant mínimo):
 
-1. Renderiza selo **Cliente**, nome **Leandro Mendes**, botão **+ Novo chamado**, rótulo **MEUS CHAMADOS**.
+1. Renderiza selo **Cliente**, nome **Leandro Mendes**, botão **+ Novo chamado** (`aria-pressed`), rótulo **MEUS CHAMADOS** e o formulário **Abrir chamado**, sem cartão selecionado.
 2. Não renderiza “categoria”, “Infraestrutura”, “prioridade”, “Estourado”, “Notas internas”, “Pegar chamado”.
 3. Selecionar um `em_atendimento` mostra a faixa com o **nome do responsável** e HISTÓRICO sem notas internas (plantar uma `interna: true` no tenant de teste e garantir que o corpo **não** aparece).
 4. Textarea vazia → **Enviar** `disabled`; com texto → chama `enviarMensagemCliente`.

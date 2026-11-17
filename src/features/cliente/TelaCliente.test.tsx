@@ -56,19 +56,23 @@ describe('TelaCliente', () => {
     resetarStoreParaTestes()
   })
 
-  it('mostra o cliente, a lista e o chamado mais recente', () => {
+  it('mostra o cliente, a lista e o formulário de novo chamado', () => {
     montar()
     expect(screen.getByText('Cliente')).toBeInTheDocument()
     expect(document.querySelector('.cabecalho-app__usuario')).toHaveTextContent(
       'Leandro Mendes',
     )
-    expect(screen.getByRole('button', { name: '+ Novo chamado' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '+ Novo chamado' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
     expect(screen.getByText('MEUS CHAMADOS')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Abrir chamado' })).toBeInTheDocument()
 
     const coluna = screen.getByRole('region', { name: 'MEUS CHAMADOS' })
     const cartoes = within(coluna).getAllByRole('button')
     expect(cartoes[1]).toHaveTextContent('Porta 443 bloqueada para fornecedor')
-    expect(cartoes[1]).toHaveAttribute('aria-current', 'true')
+    expect(cartoes[1]).not.toHaveAttribute('aria-current')
     expect(cartoes[1]).toHaveTextContent('Resposta até 17:31')
     expect(
       screen.getByRole('button', { name: /VPN cai a cada 10 minutos/ }),
@@ -76,6 +80,9 @@ describe('TelaCliente', () => {
     expect(
       screen.getByRole('button', { name: /Erro ao fechar o mês/ }).textContent,
     ).not.toMatch(/Resposta/)
+
+    fireEvent.click(cartoes[1]!)
+    expect(cartoes[1]).toHaveAttribute('aria-current', 'true')
     expect(
       screen.getByRole('heading', { name: 'Porta 443 bloqueada para fornecedor' }),
     ).toBeInTheDocument()
@@ -141,6 +148,9 @@ describe('TelaCliente', () => {
 
   it('envia mensagem pública e esvazia a caixa', () => {
     montar()
+    fireEvent.click(
+      screen.getByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    )
     const enviar = screen.getByRole('button', { name: 'Enviar' })
     const campo = screen.getByLabelText('Mensagem')
     expect(enviar).toBeDisabled()
@@ -160,6 +170,9 @@ describe('TelaCliente', () => {
 
   it('descarta o texto não enviado ao trocar de chamado e ao abrir o formulário', () => {
     montar()
+    fireEvent.click(
+      screen.getByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    )
     fireEvent.change(screen.getByLabelText('Mensagem'), {
       target: { value: 'Ainda não enviei' },
     })
@@ -246,11 +259,21 @@ describe('TelaCliente', () => {
 
   it('cancelar a abertura volta ao detalhe anterior', () => {
     montar()
+    fireEvent.click(screen.getByRole('button', { name: /Erro ao fechar o mês/ }))
     fireEvent.click(screen.getByRole('button', { name: '+ Novo chamado' }))
     expect(screen.getByRole('button', { name: '+ Novo chamado' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
+    expect(screen.getByRole('heading', { name: 'Erro ao fechar o mês' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Erro ao fechar o mês/ }),
+    ).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('cancelar a abertura inicial mostra o chamado mais recente', () => {
+    montar()
     fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
     expect(
       screen.getByRole('heading', { name: 'Porta 443 bloqueada para fornecedor' }),
@@ -263,6 +286,7 @@ describe('TelaCliente', () => {
   it('atualiza a faixa quando o chamado aberto é atribuído, sem perder o texto digitado', () => {
     const { juliana, aberto, agora } = prepararChamadoAberto()
     montar()
+    fireEvent.click(screen.getByRole('button', { name: /Chamado aberto de teste/ }))
     const campo = screen.getByLabelText('Mensagem')
     fireEvent.change(campo, { target: { value: 'Texto pendente' } })
     act(() => {
@@ -283,6 +307,7 @@ describe('TelaCliente', () => {
   it('reaplicar o mesmo evento não duplica a linha do histórico', () => {
     const { juliana, aberto, agora } = prepararChamadoAberto()
     montar()
+    fireEvent.click(screen.getByRole('button', { name: /Chamado aberto de teste/ }))
     const evento = {
       id: 'evt-atribuicao-duplicada',
       tipo: 'chamado.atribuido' as const,
@@ -296,10 +321,13 @@ describe('TelaCliente', () => {
     expect(screen.getAllByText('Chamado atribuído a Juliana Pereira')).toHaveLength(1)
   })
 
-  it('mostra o vazio na lista e no painel', () => {
+  it('mostra o vazio na lista e o formulário de abertura', () => {
     const tenant = useStore.getState().tenant!
     useStore.setState({ tenant: { ...tenant, chamados: [] } })
     montar()
+    expect(screen.getByText('Você ainda não abriu chamados.')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Abrir chamado' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
     expect(screen.getAllByText('Você ainda não abriu chamados.')).toHaveLength(2)
     expect(
       screen.getByRole('heading', { name: 'Você ainda não abriu chamados.' }),

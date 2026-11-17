@@ -9,10 +9,10 @@ import './TelaCliente.css'
 
 /**
  * Orquestra a rotina do cliente: cabeçalho, lista dos próprios chamados
- * e o painel à direita (detalhe ou abertura). Guarda a vista
- * (`detalhe` ou `novo`), o chamado selecionado e uma geração que zera o
- * texto não enviado ao trocar de item. Abrir, enviar e reabrir sobem
- * para a store.
+ * e o painel à direita (detalhe ou abertura). A entrada é o formulário
+ * de novo chamado. Guarda a vista (`detalhe` ou `novo`), o chamado
+ * selecionado e uma geração que zera o texto não enviado ao trocar de
+ * item. Abrir, enviar e reabrir sobem para a store.
  *
  * A lista fica em `ColunaMeusChamados.tsx`, o detalhe em
  * `PainelChamadoCliente.tsx` e o formulário em `FormularioNovoChamado.tsx`.
@@ -25,7 +25,7 @@ export function TelaCliente() {
   const alterarStatus = useStore((estado) => estado.alterarStatus)
   const abrirChamado = useStore((estado) => estado.abrirChamado)
 
-  const [vista, setVista] = useState<'detalhe' | 'novo'>('detalhe')
+  const [vista, setVista] = useState<'detalhe' | 'novo'>('novo')
   const [selecionadoId, setSelecionadoId] = useState<string | null>(null)
   const [geracao, setGeracao] = useState(0)
 
