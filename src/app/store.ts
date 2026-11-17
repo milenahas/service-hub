@@ -20,6 +20,7 @@ type EstadoStore = {
   sair: () => void
   aplicarEvento: (evento: Evento) => void
   pegarChamado: (chamadoId: string) => void
+  atribuirChamado: (chamadoId: string, consultorId: string | null) => void
   enviarMensagemCliente: (chamadoId: string, corpo: string) => void
   salvarNotaInterna: (chamadoId: string, corpo: string) => void
   alterarStatus: (
@@ -83,6 +84,24 @@ export const useStore = create<EstadoStore>((set, get) => ({
       tipo: 'chamado.atribuido',
       ocorrido_em: agoraDoTenant(tenant),
       payload: { chamado_id: chamadoId, consultor_id: usuarioLogado.id },
+    })
+  },
+
+  atribuirChamado: (chamadoId, consultorId) => {
+    const { tenant, aplicarEvento: aplicar } = get()
+    if (!tenant) return
+    const chamado = tenant.chamados.find((c) => c.id === chamadoId)
+    if (consultorId === null && (!chamado || chamado.responsavel_id === null)) {
+      return
+    }
+    if (consultorId !== null && chamado?.responsavel_id === consultorId) {
+      return
+    }
+    aplicar({
+      id: criarIdEvento(),
+      tipo: 'chamado.atribuido',
+      ocorrido_em: agoraDoTenant(tenant),
+      payload: { chamado_id: chamadoId, consultor_id: consultorId },
     })
   },
 
