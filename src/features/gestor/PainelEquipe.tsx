@@ -34,8 +34,11 @@ type PropsPainelEquipe = {
 }
 
 /**
- * Cartão da tabela de equipe: chips de filtro, ordenação, busca e linhas de
- * consultor. Não calcula contagens — recebe `linhas` já filtradas da tela.
+ * Desenha a tabela Equipe do dashboard: título, chips de filtro,
+ * ordenação, busca e uma linha por consultor. Não calcula ativos,
+ * risco nem ociosidade — as linhas já vêm de `equipe-gestor.ts`.
+ * Filtro, busca, ordenação e o clique em ver chamados ficam em
+ * `TelaGestor.tsx`.
  */
 export function PainelEquipe({
   totalConsultores,

@@ -9,6 +9,12 @@ type PropsBalaoMensagem = {
   cabecalho?: string
 }
 
+/**
+ * Desenha um balão da conversa, com cabeçalho opcional e o texto. Não
+ * escolhe o lado nem a ordem — o tipo visual chega pronto. O texto vem
+ * de `mensagens-chamado.ts`. A lista do consultor e do gestor fica em
+ * `ListaConversa.tsx`; a do cliente, em `PainelChamadoCliente.tsx`.
+ */
 export function BalaoMensagem({
   mensagem,
   tipoVisual,

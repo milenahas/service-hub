@@ -16,6 +16,13 @@ function extrairSnapshot(tenant: TenantSessao): SnapshotLeitura {
   return { idsChamados, ultimaMensagemPorChamado }
 }
 
+/**
+ * Guarda os chamados com ponto azul na fila: chamado novo ou mensagem
+ * pública nova desde a entrada na tela. O chamado aberto não entra no
+ * conjunto. A carga inicial não marca nada. Não desenha a bolinha —
+ * isso fica em `ColunaFila.tsx`. Quem limpa ao selecionar é
+ * `TelaConsultor.tsx`.
+ */
 export function useNaoLidos(
   tenant: TenantSessao | null,
   chamadoSelecionadoId: string | null,

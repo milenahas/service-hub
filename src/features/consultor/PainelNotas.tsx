@@ -11,6 +11,14 @@ type PropsPainelNotas = {
   aoSalvarNota: (texto: string) => void
 }
 
+/**
+ * Desenha o painel de notas internas do consultor: a lista, o campo e
+ * o botão de salvar. Guarda o texto ainda não gravado. Fechar e salvar
+ * sobem para `TelaConsultor.tsx`, que chama a store. O recorte das
+ * notas fica em `mensagens-chamado.ts`; cada item, em
+ * `ItemNotaInterna.tsx`. A conversa pública continua em
+ * `PainelChamado.tsx`.
+ */
 export function PainelNotas({
   chamadoId,
   mensagens,

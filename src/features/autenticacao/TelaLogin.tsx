@@ -12,6 +12,17 @@ import {
 import { resolverUsuarioLogin } from './resolver-usuario-login.ts'
 import './TelaLogin.css'
 
+/**
+ * Desenha o login por usuário, sem senha: o campo, o erro inline e a
+ * lista de perfis. Guarda o texto digitado e a mensagem de erro.
+ * Usuário inválido aparece sob o campo; o válido inicia a sessão e
+ * segue para a rota do perfil.
+ *
+ * Quem casa o texto com o snapshot é `resolver-usuario-login.ts`. O
+ * texto do erro e a ordem dos perfis ficam em `constantes-login.ts`.
+ * A sessão nasce na store em `app/store.ts`; o destino, em
+ * `redirecionar-por-perfil.ts`.
+ */
 export function TelaLogin() {
   const [usuario, setUsuario] = useState('')
   const [erro, setErro] = useState<string | undefined>()

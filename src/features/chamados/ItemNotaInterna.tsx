@@ -6,6 +6,11 @@ type PropsItemNotaInterna = {
   nota: MensagemBruta
 }
 
+/**
+ * Desenha uma nota interna. Não lista, não filtra e não guarda texto
+ * novo. O corpo vem de `mensagens-chamado.ts`. A lista fica em
+ * `PainelNotas.tsx` e em `PainelConversaGestor.tsx`.
+ */
 export function ItemNotaInterna({ nota }: PropsItemNotaInterna) {
   return <article className="nota-interna">{textoMensagem(nota)}</article>
 }

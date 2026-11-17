@@ -9,6 +9,11 @@ type PropsRodapeRespostaCliente = {
   aoEnviar: (texto: string) => void
 }
 
+/**
+ * Desenha o rodapé “Responder ao cliente…” no chamado ativo, ou a
+ * legenda de chamado concluído. Guarda o texto digitado. Enviar sobe
+ * para `PainelChamado.tsx`. Não grava a mensagem nem muda o status.
+ */
 export function RodapeRespostaCliente({
   status,
   aoEnviar,

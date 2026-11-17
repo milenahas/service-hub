@@ -29,9 +29,13 @@ type PropsPainelConversaGestor = {
 }
 
 /**
- * Vista conversa do gestor: cabeçalho do chamado, redistribuição, thread só
- * leitura e painel fixo de notas internas. Não altera tenant — repassa
- * atribuição e nota para a store via `TelaGestor`.
+ * Desenha a conversa do gestor: cabeçalho do chamado, redistribuição,
+ * thread só leitura e o bloco de notas. Guarda o texto da nota ainda
+ * não salva. Não grava no tenant — atribuição e nota sobem para
+ * `TelaGestor.tsx`. A thread fica em `ListaConversa.tsx`, cada nota em
+ * `ItemNotaInterna.tsx` e o recorte das mensagens em
+ * `mensagens-chamado.ts`. As opções de responsável vêm de
+ * `lista-chamados-gestor.ts`.
  */
 export function PainelConversaGestor({
   chamado,

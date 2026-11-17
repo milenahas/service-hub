@@ -39,9 +39,12 @@ type PropsTabelaChamadosGestor = {
 }
 
 /**
- * Tabela compartilhada de chamados nas vistas lista, detalhe do consultor e
- * conversa não usa este módulo. Select de responsável e ação Conversa sobem
- * eventos via callbacks da `TelaGestor`.
+ * Desenha a tabela de chamados nas views de lista e de consultor:
+ * prazo, status, responsável e a ação Conversa. Não filtra, não ordena
+ * e não decide se a conversa pode abrir — isso fica em
+ * `lista-chamados-gestor.ts`. Rótulos de prioridade e status vêm de
+ * `indicadores-gestor.ts`. Atribuir e abrir conversa sobem para
+ * `TelaGestor.tsx`. A conversa em si é `PainelConversaGestor.tsx`.
  */
 export function TabelaChamadosGestor({
   tenant,

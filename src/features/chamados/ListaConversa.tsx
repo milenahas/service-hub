@@ -14,6 +14,14 @@ type PropsListaConversa = {
   usuarioLogado: Usuario
 }
 
+/**
+ * Desenha a thread pública do chamado, uma linha por mensagem,
+ * inclusive as de sistema. Não escolhe o chamado nem guarda texto
+ * digitado. A ordem e as linhas de sistema vêm de
+ * `linha-tempo-conversa.ts`; o lado de cada balão, de
+ * `tipo-visual-balao.ts`; o desenho, de `BalaoMensagem.tsx`. Quem
+ * monta a tela é `PainelChamado.tsx` e `PainelConversaGestor.tsx`.
+ */
 export function ListaConversa({
   mensagens,
   historico,

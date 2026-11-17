@@ -7,8 +7,11 @@ import type { Chamado } from '../../dominio/snapshot.ts'
 import type { AbaFila } from './fila-consultor.ts'
 
 /**
- * Agrupa e ordena os chamados na lista pelo prazo de resolução em relação a `meta.agora`:
- * urgentes (estourado ou < 1h), próximas 4h, demais, aguardando cliente.
+ * Agrupa e ordena a lista do consultor pelo prazo de resolução em
+ * relação a `meta.agora`: urgentes (estourado ou menos de 1h), próximas
+ * 4h, demais e aguardando cliente. Concluídos formam uma seção à parte,
+ * do mais recente ao mais antigo. Não desenha. Quem pede as seções é
+ * `fila-consultor.ts`; quem pinta é `ColunaFila.tsx`.
  */
 
 export type GrupoListaFila =

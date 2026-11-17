@@ -48,11 +48,18 @@ const OPCOES_ORDENACAO = [
 
 /**
  * Orquestra a rotina do gestor: dashboard da equipe, listas de indicador,
- * detalhe do consultor e conversa somente leitura. Mantém vista local, filtros
- * e origem do voltar; lê o tenant da store e dispara `atribuirChamado` e
- * `salvarNotaInterna`. Publica o chamado da conversa para a simulação ao vivo.
- * Cálculos em módulos `.ts` vizinhos; desenho em painéis. Os disparos ficam em
- * `simulacao-gestor.ts`; a store em `app/store.ts` guarda o id aberto e o tenant.
+ * detalhe do consultor e conversa somente leitura. Guarda a view, os
+ * filtros, a busca, a ordenação e a origem do voltar. Lê o tenant da
+ * store e dispara atribuição e nota interna. Publica o chamado da
+ * conversa para a simulação ao vivo.
+ *
+ * Os cards ficam em `PainelIndicadores.tsx`, a equipe em
+ * `PainelEquipe.tsx`, a tabela em `TabelaChamadosGestor.tsx` e a
+ * conversa em `PainelConversaGestor.tsx`. Contagens em
+ * `indicadores-gestor.ts`, linhas da equipe em `equipe-gestor.ts`,
+ * recorte da tabela em `lista-chamados-gestor.ts` e o texto do voltar
+ * em `vista-gestor.ts`. Os disparos ficam em `simulacao-gestor.ts`; a
+ * store em `app/store.ts` guarda o id aberto e o tenant.
  */
 export function TelaGestor() {
   const usuario = useStore((e) => e.usuarioLogado)

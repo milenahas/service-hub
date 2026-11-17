@@ -15,8 +15,9 @@ type PropsPainelIndicadores = {
 }
 
 /**
- * Desenha os três cards de indicador do dashboard do gestor (SLA, sem
- * responsável, ociosos). Só lê contagens e repassa cliques à tela orquestradora.
+ * Desenha os três cards do dashboard: SLA em até 4h, sem responsável e
+ * ociosos. As contagens vêm de `indicadores-gestor.ts`. O clique abre
+ * a lista ou filtra a equipe em `TelaGestor.tsx`. Não guarda vista.
  */
 export function PainelIndicadores({
   chamados,

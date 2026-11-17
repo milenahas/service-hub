@@ -8,6 +8,12 @@ const LOGIN_PARA_ID_USUARIO: Record<string, string> = {
   cliente: '7a853f14-c064-4dc4-bb24-8e8fdce4ccd4',
 }
 
+/**
+ * Casa o texto digitado, sem espaços nas pontas e sem distinguir
+ * maiúsculas, com um dos quatro logins fixos e devolve o usuário do
+ * snapshot. Não desenha o campo nem inicia a sessão — a tela fica em
+ * `TelaLogin.tsx` e a sessão na store em `app/store.ts`.
+ */
 export function resolverUsuarioLogin(
   textoDigitado: string,
   usuarios: Usuario[],
