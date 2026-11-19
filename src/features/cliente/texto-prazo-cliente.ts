@@ -5,7 +5,7 @@ import type { Usuario } from '../../dominio/tipos.ts'
 
 /**
  * Textos de prazo que o cliente pode ler. A lista usa a hora; o painel,
- * a data. Não desenha e não usa o texto do consultor (“Estourado há”).
+ * a data. Não desenha e não usa o texto do consultor (“Vencido há”).
  * Quem pinta é `ColunaMeusChamados.tsx` e `PainelChamadoCliente.tsx`.
  * O relógio continua sendo `meta.agora`, comparado em `dominio/prazo.ts`.
  */

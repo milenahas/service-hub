@@ -258,7 +258,7 @@ Pílula · 12px/600 · padding 3px 10px · `nowrap`
 ```ts
 import type { StatusChamado } from '../../dominio/...';
 
-export type FaixaPrazo = 'estourado' | 'urgente' | 'alerta' | 'neutro';
+export type FaixaPrazo = 'vencido' | 'urgente' | 'alerta' | 'neutro';
 
 export type PropsSelo =
   | {

@@ -8,10 +8,10 @@ import {
 describe('prazo', () => {
   const agora = '2026-01-01T12:00:00Z'
 
-  it('classifica estourado e urgente', () => {
+  it('classifica vencido e urgente', () => {
     expect(
       classificarFaixaPrazo('2026-01-01T11:00:00Z', agora, 'aberto'),
-    ).toBe('estourado')
+    ).toBe('vencido')
     expect(
       classificarFaixaPrazo('2026-01-01T12:30:00Z', agora, 'aberto'),
     ).toBe('urgente')
@@ -21,7 +21,7 @@ describe('prazo', () => {
     expect(
       faixaBarraItemFila('aguardando_cliente', 'urgente'),
     ).toBe('neutro')
-    expect(faixaBarraItemFila('em_atendimento', 'estourado')).toBe(
+    expect(faixaBarraItemFila('em_atendimento', 'vencido')).toBe(
       'urgente',
     )
     expect(faixaBarraItemFila('aberto', 'alerta')).toBe('alerta')

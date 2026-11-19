@@ -269,7 +269,7 @@ export function TelaGestor() {
                     SLA nas próximas 4h
                   </h2>
                   <p className="cabecalho-lista-gestor__sub">
-                    Estourados ou perto do prazo, por ordem de urgência.
+                    Vencidos ou perto do prazo, por ordem de urgência.
                   </p>
                 </>
               )}

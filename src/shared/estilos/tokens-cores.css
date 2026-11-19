@@ -33,9 +33,9 @@
   --status-fechado-texto: #334155;
 
   /* Prazo / SLA */
-  --prazo-estourado-fundo: #fee4e2;
-  --prazo-estourado-texto: #ffffff;
-  --prazo-urgente-fundo: var(--prazo-estourado-fundo);
+  --prazo-vencido-fundo: #fee4e2;
+  --prazo-vencido-texto: #ffffff;
+  --prazo-urgente-fundo: var(--prazo-vencido-fundo);
   --prazo-urgente-texto: #b42318;
   --prazo-alerta-fundo: #fef3c7;
   --prazo-alerta-texto: #92400e;

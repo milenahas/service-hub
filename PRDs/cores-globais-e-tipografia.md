@@ -91,15 +91,15 @@ Pares **fundo / texto** para selos e faixas de etapa (cliente). Chaves de domín
 
 | Situação (regra com `meta.agora`) | Fundo (selo) | Texto (selo) | Notas |
 | --- | --- | --- | --- |
-| Estourado (`restante < 0`) | `#FEE4E2` | `#B42318` | Tokens `--prazo-estourado-fundo`; texto do selo compartilha `--prazo-urgente-texto`. Cabeçalho de grupo “URGENTES…” mantém texto `#B91C1C` (`--prazo-cabecalho-urgente-texto` / legado `--prazo-cabecalho-urgente-fundo` `#B91C1C` onde ainda houver fundo sólido). |
-| Vence em &lt; 1h | `#FEE4E2` | `#B42318` | Mesmo par visual que estourado: `--prazo-urgente-fundo` (= `--prazo-estourado-fundo`) e `--prazo-urgente-texto`. |
+| Vencido (`restante < 0`) | `#FEE4E2` | `#B42318` | Tokens `--prazo-vencido-fundo`; texto do selo compartilha `--prazo-urgente-texto`. Cabeçalho de grupo “URGENTES…” mantém texto `#B91C1C` (`--prazo-cabecalho-urgente-texto` / legado `--prazo-cabecalho-urgente-fundo` `#B91C1C` onde ainda houver fundo sólido). |
+| Vence em &lt; 1h | `#FEE4E2` | `#B42318` | Mesmo par visual que vencido: `--prazo-urgente-fundo` (= `--prazo-vencido-fundo`) e `--prazo-urgente-texto`. |
 | Vence em 1h–4h | `#FEF3C7` | `#92400E` | Cabeçalho “PRÓXIMAS 4 HORAS” texto âmbar `#92400E` |
 | ≥ 4h | `#F1F5F9` | `#334155` | Cabeçalho “DEMAIS, POR PRAZO” texto `#334155` |
 | Concluído | — | — | Usar selo de status, não paleta de prazo |
 
-**Token de texto legado (branco):** `--prazo-estourado-texto` permanece `#FFFFFF` no `:root` para usos que ainda exijam par sólido; selos estourado e urgente usam `--prazo-urgente-texto` (`#B42318`) no **Selo**.
+**Token de texto legado (branco):** `--prazo-vencido-texto` permanece `#FFFFFF` no `:root` para usos que ainda exijam par sólido; selos vencido e urgente usam `--prazo-urgente-texto` (`#B42318`) no **Selo**.
 
-**Faixa vertical na fila (3px):** urgente/estourado → `#D92D20` (`--prazo-faixa-urgente`); âmbar (&lt; 4h) → `--prazo-faixa-alerta`; demais → `--prazo-faixa-neutro` (`#334155` conforme §7).
+**Faixa vertical na fila (3px):** urgente/vencido → `#D92D20` (`--prazo-faixa-urgente`); âmbar (&lt; 4h) → `--prazo-faixa-alerta`; demais → `--prazo-faixa-neutro` (`#334155` conforme §7).
 
 ### 5.4 Alertas, erros e destaques (MUST)
 

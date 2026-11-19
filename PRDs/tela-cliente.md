@@ -31,7 +31,7 @@ O cabeçalho mostra **Leandro Mendes**, não “Helena Duarte”. Contagens, tí
 | `PRDs/prints-tela-cliente/Cliente - Tela 5 - Chamado fechado.png` | Painel inteiro cinza-claro; **sem** faixa de etapa; **Resposta prevista** = **—**; rodapé “Este chamado foi fechado. O problema voltou?” + **Reabrir chamado** |
 | `PRDs/prints-tela-cliente/Cliente - Tela 6 - Criar chamado.png` | Painel **Abrir chamado**; subtítulo literal; Assunto + Descrição; **Cancelar** / **Enviar chamado** (desabilitado com campos vazios); nenhum item da lista selecionado |
 
-Hierarquia, alinhamento, raios, cores e microcopy abaixo são contrato. Dúvida entre texto deste PRD e detalhe fino de espaçamento: o **print vence no pixel**. Regra de negócio do CONTEXTO e do `AGENTS.md` vence no dado (Helena vs Leandro; SLA “estourado” nunca visível ao cliente).
+Hierarquia, alinhamento, raios, cores e microcopy abaixo são contrato. Dúvida entre texto deste PRD e detalhe fino de espaçamento: o **print vence no pixel**. Regra de negócio do CONTEXTO e do `AGENTS.md` vence no dado (Helena vs Leandro; SLA “vencido” nunca visível ao cliente).
 
 O CONTEXTO cita um print `06-cliente-reabrir-motivo.png` que **não** está nesta pasta. O formulário de motivo da reabertura é **MUST** mesmo assim (§8.5), recolhido atrás do botão **Reabrir chamado**.
 
@@ -45,7 +45,7 @@ Objetivos mensuráveis:
 
 1. **Paridade visual** com os seis prints (critério bloqueante por estado).
 2. Lista e detalhe vêm só de `tenant.chamados` da sessão (todos com `solicitante_id` do logado). A tela **não** recorta de novo e **não** lê `dados.json`.
-3. Cliente **nunca** vê categoria, grupo, prioridade, texto “estourado”, contagem de SLA, nem mensagem `interna: true`.
+3. Cliente **nunca** vê categoria, grupo, prioridade, texto “vencido”, contagem de SLA, nem mensagem `interna: true`.
 4. Faixa de etapa por status (CONTEXTO §6) é o feedback de bater o olho.
 5. Abrir chamado, enviar mensagem e reabrir passam por `aplicarEvento` (`chamado.aberto`, `mensagem.adicionada`, `status.alterado`). Idempotência já existe no redutor — não criar caminho paralelo na store.
 6. `npm run lint`, `npm run test` e `npm run build` verdes.
@@ -80,7 +80,7 @@ Objetivos mensuráveis:
 | K8 | **Testes** (`*.test.*`): sem `if`, `switch` ou ternário — casos em `it.each` / tabelas e `expect` direto. |
 | K9 | **Nomes** de pasta, função e prop de produto em português (`rotulo`, `erro`, `aoSelecionar`). Props de HTML/React (`value`, `onChange`, `disabled`, `placeholder`, `aria-*`) com o **nome nativo**. |
 | K10 | **JSDoc** em português logo acima do `export` principal de cada `Tela*.tsx`, painel, coluna e `.ts` de regra da feature. Papel do arquivo e o que fica no vizinho, com crase no nome do arquivo. Sem repetir assinatura. Tom: `TelaConsultor.tsx`, `ColunaFila.tsx`, `fila-consultor.ts`. |
-| K11 | **Prazo do cliente num lugar só.** Não reusar `formatarTextoPrazoConsultor` na UI do cliente (esse texto fala “Estourado há”). Função própria: `textoPrazoListaCliente` / `textoRespostaPrevistaCliente`. `chamadoAtivo` e comparação com `meta.agora` continuam em `dominio/prazo.ts` se couber, ou ao lado dessas funções. |
+| K11 | **Prazo do cliente num lugar só.** Não reusar `formatarTextoPrazoConsultor` na UI do cliente (esse texto fala “Vencido há”). Função própria: `textoPrazoListaCliente` / `textoRespostaPrevistaCliente`. `chamadoAtivo` e comparação com `meta.agora` continuam em `dominio/prazo.ts` se couber, ou ao lado dessas funções. |
 | K12 | **Conversa dois lados (eu × suporte).** `tipoVisualBalao` do consultor pinta o solicitante como cinza à esquerda — **errado** para o cliente logado. Não passar `perfil` para o mapper compartilhado (`AGENTS.md`: se o compartilhado precisar parâmetro por perfil, **separar**). Ver §10.1. |
 | K13 | **Sem dependência nova.** Sem toast. Feedback: botão `disabled`, texto no rodapé, seleção do chamado recém-criado. |
 | K14 | **Tokens, não hex.** Cores e tipo vêm de [cores-globais-e-tipografia.md](./cores-globais-e-tipografia.md). Hex só se um token ainda não existir — aí o token nasce em `shared/estilos`, não solto no CSS da feature. |
@@ -126,7 +126,7 @@ O produto tem `prazo_primeira_resposta` e `prazo_resolucao`. A copy do cliente f
 | Lista concluído | — | vazio (não renderiza o span) |
 | Painel **Resposta prevista** | mesmo campo | futuro → `formatarDataHoraUsuario`; passado e ativo → **Em breve**; concluído → **—** |
 
-**Proibido** na UI do cliente: “Estourado há”, “Vence em”, “Prazo em”, horas de SLA, `prazo_resolucao` como selo de consultor.
+**Proibido** na UI do cliente: “Vencido há”, “Vence em”, “Prazo em”, horas de SLA, `prazo_resolucao` como selo de consultor.
 
 ### 5.3 Ação nova na store
 
@@ -313,7 +313,7 @@ Ver §5.3. Depois do sucesso, o item novo aparece no topo **sem F5** e a busca z
 ### 8.5 O que o cliente nunca vê (MUST testar)
 
 - Qualquer `interna: true` (lista, detalhe, notificação, contagem).
-- Palavras categoria, grupo, prioridade, SLA, “estourado”, “urgente”, “Fila do grupo”.
+- Palavras categoria, grupo, prioridade, SLA, “vencido”, “urgente”, “Fila do grupo”.
 - Painel amarelo de notas, botão Status, Pegar chamado, Redistribuir.
 - Toast.
 
@@ -461,7 +461,7 @@ Funções puras com `meta.agora` fixo (`2026-11-03T13:00:00Z` ou fixture):
 RTL da tela (Leandro na store via `iniciarSessao` **ou** tenant mínimo):
 
 1. Renderiza selo **Cliente**, nome **Leandro Mendes**, botão **+ Novo chamado** (`aria-pressed`), rótulo **MEUS CHAMADOS** e o formulário **Abrir chamado**, sem cartão selecionado.
-2. Não renderiza “categoria”, “Infraestrutura”, “prioridade”, “Estourado”, “Notas internas”, “Pegar chamado”.
+2. Não renderiza “categoria”, “Infraestrutura”, “prioridade”, “Vencido”, “Notas internas”, “Pegar chamado”.
 3. Selecionar um `em_atendimento` mostra a faixa com o **nome do responsável** e HISTÓRICO sem notas internas (plantar uma `interna: true` no tenant de teste e garantir que o corpo **não** aparece).
 4. Textarea vazia → **Enviar** `disabled`; com texto → chama `enviarMensagemCliente`.
 5. Chamado `fechado`: painel sem faixa, texto **Este chamado foi fechado. O problema voltou?**, **Reabrir chamado**; **Confirmar** do motivo `disabled` até digitar; confirmar chama `alterarStatus` para `aberto`.

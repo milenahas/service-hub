@@ -155,7 +155,7 @@ describe('TelaGestor', () => {
       screen.getByRole('heading', { name: 'SLA nas próximas 4h' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByText('Estourados ou perto do prazo, por ordem de urgência.'),
+      screen.getByText('Vencidos ou perto do prazo, por ordem de urgência.'),
     ).toBeInTheDocument()
   })
 

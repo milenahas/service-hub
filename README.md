@@ -73,7 +73,7 @@ A fila tem quatro abas:
 | **Sem dono** | Chamados ativos do grupo que ninguém pegou. |
 | **Concluídos** | Resolvidos e fechados que estavam com o consultor logado. |
 
-Acima da lista, a busca filtra por texto e um seletor restringe a **Todos**, **Urgentes**, **Próximas 4 horas** ou **Aguardando cliente**. Os ativos se agrupam por urgência do prazo de resolução: estourado ou com menos de uma hora, próximas quatro horas, demais, e aguardando cliente. O selo de prazo usa o texto **Estourado há…**, **Vence em…** ou **Prazo em…**, com cor mais forte quanto mais perto do limite. Concluído mostra o selo de status.
+Acima da lista, a busca filtra por texto e um seletor restringe a **Todos**, **Urgentes**, **Próximas 4 horas** ou **Aguardando cliente**. Os ativos se agrupam por urgência do prazo de resolução: vencido ou com menos de uma hora, próximas quatro horas, demais, e aguardando cliente. O selo de prazo usa o texto **Vencido há…**, **Vence em…** ou **Prazo em…**, com cor mais forte quanto mais perto do limite. Concluído mostra o selo de status.
 
 No chamado selecionado dá para:
 
@@ -99,7 +99,7 @@ A tela abre no painel da equipe, com a saudação, a data de referência, quanto
 
 Três cartões resumem o momento:
 
-- **SLA em até 4h** — chamados ativos estourados, com menos de uma hora ou dentro das próximas quatro horas. O clique abre a lista ordenada por urgência.
+- **SLA em até 4h** — chamados ativos vencidos, com menos de uma hora ou dentro das próximas quatro horas. O clique abre a lista ordenada por urgência.
 - **Sem responsável** — chamados ativos que ninguém pegou. O clique abre a lista para atribuir.
 - **Ociosos agora** — consultores sem nenhum chamado ativo. O clique filtra a equipe por ociosos.
 

@@ -8,7 +8,7 @@ import type { AbaFila } from './fila-consultor.ts'
 
 /**
  * Agrupa e ordena a lista do consultor pelo prazo de resolução em
- * relação a `meta.agora`: urgentes (estourado ou menos de 1h), próximas
+ * relação a `meta.agora`: urgentes (vencido ou menos de 1h), próximas
  * 4h, demais e aguardando cliente. Concluídos formam uma seção à parte,
  * do mais recente ao mais antigo. Não desenha. Quem pede as seções é
  * `fila-consultor.ts`; quem pinta é `ColunaFila.tsx`.
@@ -28,7 +28,7 @@ export type SecaoFila = {
 }
 
 const TITULOS: Record<GrupoListaFila, string> = {
-  urgentes: 'URGENTES · ESTOURADO OU MENOS DE 1H',
+  urgentes: 'URGENTES · VENCIDO OU MENOS DE 1H',
   proximas_quatro: 'PRÓXIMAS 4 HORAS',
   demais: 'DEMAIS, POR PRAZO',
   aguardando_cliente: 'AGUARDANDO CLIENTE',
@@ -51,7 +51,7 @@ function grupoAtivo(chamado: Chamado, agora: string): GrupoListaFila {
     agora,
     chamado.status,
   )
-  if (faixa === 'estourado' || faixa === 'urgente') {
+  if (faixa === 'vencido' || faixa === 'urgente') {
     return 'urgentes'
   }
   if (faixa === 'alerta') {

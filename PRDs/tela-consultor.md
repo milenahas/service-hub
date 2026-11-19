@@ -182,7 +182,7 @@ Implementar em `shared/` ou `app/` se ainda não existir PRD de cabeçalho — *
 1. Título **Fila** + linha 12px: `{Nome do grupo} · N atribuídos · N sem dono · N urgentes`.
    - **Atribuídos:** ativos com `responsavel_id` = logado.
    - **Sem dono:** ativos sem responsável no grupo.
-   - **Urgentes:** ativos com faixa `estourado` ou `urgente` (`restante < 1h`), conforme `classificarFaixaPrazo`.
+   - **Urgentes:** ativos com faixa `vencido` ou `urgente` (`restante < 1h`), conforme `classificarFaixaPrazo`.
 2. **Abas** (ordem MUST): **Minha fila** · **Fila do grupo** · **Concluídos** · **Sem dono**.
    - Minha fila: ativos, `responsavel_id` = logado.
    - Fila do grupo: ativos, responsável = outro consultor do mesmo `grupo_id`.
@@ -194,7 +194,7 @@ Implementar em `shared/` ou `app/` se ainda não existir PRD de cabeçalho — *
 4. **Busca** `CampoTexto` placeholder **Buscar chamado** (assunto, cliente, `#numero`).
 5. **Select filtro** (não na aba Concluídos): **Todos (n)** · **Urgentes (n)** · **Vencem em 4h (n)** · **Aguard. cliente (n)** — contagens dinâmicas.
 6. **Lista agrupada** (cabeçalhos sticky `top: 0`):
-   - `URGENTES · ESTOURADO OU MENOS DE 1H` — vermelho `#B91C1C`
+   - `URGENTES · VENCIDO OU MENOS DE 1H` — vermelho `#B91C1C`
    - `PRÓXIMAS 4 HORAS` — âmbar `#92400E`
    - `DEMAIS, POR PRAZO` — cinza `#334155`
    - `AGUARDANDO CLIENTE` — por último; `aguardando_cliente`
@@ -264,7 +264,7 @@ Usar `restante = prazo_resolucao - meta.agora` (UTC no dado; exibição com `Int
 
 | Faixa | Texto selo (ex.) |
 | --- | --- |
-| `restante < 0` | Estourado há Xh Ymin |
+| `restante < 0` | Vencido há Xh Ymin |
 | `< 1h` | Vence em Xmin |
 | `< 4h` | Vence em Xh Ymin |
 | `≥ 4h` | Prazo em Xh Ymin |
@@ -293,7 +293,7 @@ Select lista só estados **diferentes** do atual + rótulos `formatarRotuloStatu
 | Abas | Minha fila · Fila do grupo · Concluídos · Sem dono |
 | Busca placeholder | Buscar chamado |
 | Filtros select | Todos · Urgentes · Vencem em 4h · Aguard. cliente |
-| Cabeçalhos grupo | URGENTES · ESTOURADO OU MENOS DE 1H · PRÓXIMAS 4 HORAS · DEMAIS, POR PRAZO · AGUARDANDO CLIENTE · CONCLUÍDOS · MAIS RECENTES PRIMEIRO |
+| Cabeçalhos grupo | URGENTES · VENCIDO OU MENOS DE 1H · PRÓXIMAS 4 HORAS · DEMAIS, POR PRAZO · AGUARDANDO CLIENTE · CONCLUÍDOS · MAIS RECENTES PRIMEIRO |
 | Lista vazia | Nenhum chamado com esses filtros. |
 | Sem responsável (item) | Sem responsável |
 | Com o cliente | Com o cliente |

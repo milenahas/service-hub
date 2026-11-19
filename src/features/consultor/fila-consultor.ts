@@ -47,7 +47,7 @@ export function calcularResumoFila(
   const semDono = ativos.filter((c) => c.responsavel_id === null).length
   const urgentes = ativos.filter((c) => {
     const faixa = classificarFaixaPrazo(c.prazo_resolucao, agora, c.status)
-    return faixa === 'estourado' || faixa === 'urgente'
+    return faixa === 'vencido' || faixa === 'urgente'
   }).length
 
   return { atribuidos, semDono, urgentes }
@@ -166,7 +166,7 @@ export function filtrarPorSelect(
   if (filtro === 'urgentes') {
     return chamados.filter((c) => {
       const faixa = classificarFaixaPrazo(c.prazo_resolucao, agora, c.status)
-      return faixa === 'estourado' || faixa === 'urgente'
+      return faixa === 'vencido' || faixa === 'urgente'
     })
   }
   if (filtro === 'quatro_horas') {

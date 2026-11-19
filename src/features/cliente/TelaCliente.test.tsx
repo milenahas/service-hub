@@ -103,7 +103,7 @@ describe('TelaCliente', () => {
     expect(texto).not.toMatch(/infraestrutura/i)
     expect(texto).not.toMatch(/prioridade/i)
     expect(texto).not.toMatch(/\bsla\b/i)
-    expect(texto).not.toMatch(/estourado/i)
+    expect(texto).not.toMatch(/vencido/i)
     expect(texto).not.toMatch(/urgente/i)
     expect(texto).not.toMatch(/notas internas/i)
     expect(texto).not.toMatch(/pegar chamado/i)

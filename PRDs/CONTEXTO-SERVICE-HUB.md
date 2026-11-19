@@ -60,9 +60,9 @@ Na UI, juntar `chamados` + `mensagens` + lookups de `usuarios` / `categorias` / 
 ### Cálculos (só na leitura)
 
 - Para **consultor/gestor** (urgência na fila): `restante = prazo_resolucao − meta.agora`.
-- Para **cliente** (linguagem amigável): usar `prazo_primeira_resposta` na “Resposta prevista” / “Resposta até HH:MM”; nunca mostrar “estourado” nem contagem crua de SLA.
+- Para **cliente** (linguagem amigável): usar `prazo_primeira_resposta` na “Resposta prevista” / “Resposta até HH:MM”; nunca mostrar “vencido” nem contagem crua de SLA.
 - Faixas de prazo (chamados ativos, visão consultor/gestor):
-  - `restante < 0` → **Estourado há Xh Ymin** (vermelho escuro `#B91C1C`, texto branco)
+  - `restante < 0` → **Vencido há Xh Ymin** (vermelho escuro `#B91C1C`, texto branco)
   - `0 ≤ restante < 1h` → **Vence em Xmin** (vermelho `#DC2626`, texto branco)
   - `1h ≤ restante < 4h` → **Vence em Xh Ymin** (âmbar fundo `#FEF3C7`, texto `#92400E`)
   - `≥ 4h` → **Prazo em Xh Ymin** (cinza fundo `#F1F5F9`, texto `#334155`)
@@ -123,7 +123,7 @@ Duas colunas: esquerda (280–360px) e painel do chamado à direita (`minmax(0,1
 - Lista dos chamados do `solicitante_id` logado, mais recentes primeiro. Cada cartão (branco, raio 14px, hover `#F1F5F9`, selecionado `#E8F2FF`): título (600, 14px); linha com **selo de status preenchido** e, à direita, texto curto de prazo:
   - `aguardando_cliente` → "Aguardando você"
   - ativo com prazo no futuro → "Resposta até HH:MM"
-  - ativo estourado → "Resposta em breve" (cliente **nunca** vê "estourado" nem contagem de SLA)
+  - ativo vencido → "Resposta em breve" (cliente **nunca** vê "vencido" nem contagem de SLA)
   - concluído → vazio.
 
 ### Painel do chamado (detalhe)
@@ -169,7 +169,7 @@ Grid de altura fixa `calc(100vh − cabeçalho)`:
    - Trocar de aba reseta o filtro para "Todos".
 3. Linha com **busca** ("Buscar chamado": assunto, cliente ou número) e **select de filtro** com contagens: Todos (n) · Urgentes (n) · Vencem em 4h (n) · Aguard. cliente (n). Na aba Concluídos o filtro não se aplica.
 4. **Lista agrupada por prazo**, em ordem (grupos vazios não aparecem):
-   - "URGENTES · ESTOURADO OU MENOS DE 1H" (cabeçalho vermelho `#B91C1C`)
+   - "URGENTES · VENCIDO OU MENOS DE 1H" (cabeçalho vermelho `#B91C1C`)
    - "PRÓXIMAS 4 HORAS" (âmbar `#92400E`)
    - "DEMAIS, POR PRAZO" (cinza `#334155`)
    - "AGUARDANDO CLIENTE" (cinza) — `aguardando_cliente` **sempre por último**.
@@ -223,7 +223,7 @@ Persona: Ricardo — equipe de consultores do snapshot. Essencial primeiro; trê
 ### Tela 1 — Dashboard (`max-width 1280px`, blocos largura total, gap 24px)
 1. Saudação "Bom dia, {primeiro nome do gestor logado}" + linha com data (`meta.agora`) · N chamados ativos · N consultores (`perfil: consultor` no snapshot).
 2. **Indicadores** (cards brancos lado a lado, número 30px):
-   - **SLA em até 4h** — ativos estourados ou com `restante < 4h` (número vermelho se > 0; borda `#FCA5A5`) → clique abre Tela 2 em modo lista "SLA nas próximas 4h".
+   - **SLA em até 4h** — ativos vencidos ou com `restante < 4h` (número vermelho se > 0; borda `#FCA5A5`) → clique abre Tela 2 em modo lista "SLA nas próximas 4h".
    - **Sem responsável** — ativos sem `responsavel_id` (vermelho se > 0) → abre Tela 2 em modo lista "Sem responsável".
    - **Ociosos agora** — consultores com 0 ativos → aplica filtro "Ociosos" na tabela Equipe.
    - Os cards são clicáveis mas **sem** seta/ícone/texto azul; só cursor pointer e leve escurecimento no hover.
@@ -257,7 +257,7 @@ Persona: Ricardo — equipe de consultores do snapshot. Essencial primeiro; trê
 - `#334155` — textos secundários, subtítulos, labels, rótulos de coluna.
 - Texto principal `#0F172A`. Divisores `#E2E8F0`. Hover de linha `#F8FAFC`. Seleção `#E8F2FF`.
 - Status: aberto/em_atendimento `#E8F2FF`/`#0B4FA8` · aguardando_cliente `#FEF3C7`/`#92400E` · resolvido `#DCFCE7`/`#166534` · fechado `#F1F5F9`/`#334155` (par = fundo/texto).
-- Alertas de prazo: `#B91C1C` (estourado), `#DC2626` (< 1h), âmbar `#FEF3C7`/`#92400E` (< 4h). Erro de formulário `#B91C1C`.
+- Alertas de prazo: `#B91C1C` (vencido), `#DC2626` (< 1h), âmbar `#FEF3C7`/`#92400E` (< 4h). Erro de formulário `#B91C1C`.
 - Notas internas: fundo `#FEFCE8`, borda `#FDE68A`, balão `#FEF9C3` com borda tracejada `#94A3B8`.
 - Outro consultor na conversa: `#E0F2FE` / borda `#BAE6FD` / texto `#0C4A6E`.
 

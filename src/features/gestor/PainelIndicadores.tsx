@@ -49,7 +49,7 @@ export function PainelIndicadores({
           {sla}
         </span>
         <span className="cartao-indicador__legenda">SLA em até 4h</span>
-        <span className="cartao-indicador__sub">Estourados ou perto do prazo</span>
+        <span className="cartao-indicador__sub">Vencidos ou perto do prazo</span>
       </button>
       <button
         type="button"

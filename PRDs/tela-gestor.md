@@ -40,7 +40,7 @@ Objetivos mensuráveis:
 
 1. **Paridade visual** com os cinco prints (critério bloqueante por vista).
 2. Equipe, contagens e nomes vêm de `tenant` + `consultoresEquipeGestor` — a tela **não** recorta de novo.
-3. SLA usa `meta.agora`. Estourado ou `< 4h` aparece no card e na lista, com selo de `dominio/prazo.ts`.
+3. SLA usa `meta.agora`. Vencido ou `< 4h` aparece no card e na lista, com selo de `dominio/prazo.ts`.
 4. Não existe coluna “Carga”, barra de carga, estado “Sobrecarregado” nem card “Escalados pelo cliente”.
 5. Trocar o responsável emite `chamado.atribuido` pelo redutor já existente. A nota interna emite `mensagem.adicionada` com `interna: true`.
 6. `npm run lint`, `npm run test` e `npm run build` verdes.
@@ -96,7 +96,7 @@ F5 ou **Sair** zera a store. A tela não persiste vista nem filtro.
 
 Chamado **ativo** = status diferente de `resolvido` e de `fechado`.
 
-**Em risco** (card “SLA em até 4h”, coluna “Em risco”, chip “Com risco” / “Em risco”) = ativo com `classificarFaixaPrazo` em `estourado`, `urgente` ou `alerta` (`restante < 4h`, estourado incluso). `aguardando_cliente` entra se o prazo cair nessa faixa.
+**Em risco** (card “SLA em até 4h”, coluna “Em risco”, chip “Com risco” / “Em risco”) = ativo com `classificarFaixaPrazo` em `vencido`, `urgente` ou `alerta` (`restante < 4h`, vencido incluso). `aguardando_cliente` entra se o prazo cair nessa faixa.
 
 **Ocioso** = consultor da equipe com zero chamados ativos em que `responsavel_id` é o id dele.
 
@@ -186,7 +186,7 @@ Por volta de **920px** a coluna **Ações** continua visível: primeira coluna `
 
 | Card | Número | Legenda (literal) | Cor do número | Borda |
 | --- | --- | --- | --- | --- |
-| **SLA em até 4h** | ativos em risco | Estourados ou perto do prazo | `--cor-indicador-negativo` se > 0; senão texto principal | `#FCA5A5` (`--cor-erro-borda`) se > 0 |
+| **SLA em até 4h** | ativos em risco | Vencidos ou perto do prazo | `--cor-indicador-negativo` se > 0; senão texto principal | `#FCA5A5` (`--cor-erro-borda`) se > 0 |
 | **Sem responsável** | ativos com `responsavel_id == null` | Na fila do grupo | vermelho se > 0 | `#FCA5A5` se > 0 (como no print) |
 | **Ociosos agora** | consultores ociosos da equipe | Sem chamado atribuído | texto principal, mesmo se > 0 | nenhuma borda de alerta |
 
@@ -244,7 +244,7 @@ Mesmo botão **← Voltar à equipe** e a mesma tabela de chamados. Muda o cabe�
 
 | Modo | Título | Subtítulo (literal) | Base |
 | --- | --- | --- | --- |
-| SLA | **SLA nas próximas 4h** | Estourados ou perto do prazo, por ordem de urgência. | ativos em risco da sessão |
+| SLA | **SLA nas próximas 4h** | Vencidos ou perto do prazo, por ordem de urgência. | ativos em risco da sessão |
 | Sem responsável | **Sem responsável** | Ninguém pegou ainda. Atribua pelo seletor. | ativos com `responsavel_id == null` |
 
 Título do cartão: **Chamados (n)** com n após o filtro. O mesmo `GrupoChips` de “Filtrar chamados” (§7.3). Ao abrir a lista, o valor volta para `todos`.
@@ -352,7 +352,7 @@ Funções puras, com `meta.agora` fixo:
 
 | Caso | Esperado |
 | --- | --- |
-| Ativo com prazo estourado ou `< 4h` | entra no card SLA e na lista `sla-4h` |
+| Ativo com prazo vencido ou `< 4h` | entra no card SLA e na lista `sla-4h` |
 | Ativo sem `responsavel_id` | entra no card e na lista Sem responsável |
 | Consultor com 0 ativos | ocioso; chip Ociosos o inclui; situação “Ocioso” |
 | Consultor com ativo em risco | coluna Em risco > 0; chip Com risco o inclui |

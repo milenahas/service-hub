@@ -20,7 +20,7 @@ export function chamadoEmRisco(
     agora,
     chamado.status,
   )
-  return faixa === 'estourado' || faixa === 'urgente' || faixa === 'alerta'
+  return faixa === 'vencido' || faixa === 'urgente' || faixa === 'alerta'
 }
 
 export function contarChamadosAtivos(chamados: Chamado[]): number {

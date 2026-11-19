@@ -30,7 +30,7 @@ const chamadoAtivoBase: Chamado = {
 describe('indicadores-gestor', () => {
   it.each([
     {
-      nome: 'prazo estourado',
+      nome: 'prazo vencido',
       prazo: '2026-01-01T11:00:00Z',
       esperado: true,
     },

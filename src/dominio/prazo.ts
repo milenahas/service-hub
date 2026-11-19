@@ -15,7 +15,7 @@ export function faixaBarraItemFila(
   if (status === 'aguardando_cliente') {
     return 'neutro'
   }
-  if (faixa === 'estourado' || faixa === 'urgente') {
+  if (faixa === 'vencido' || faixa === 'urgente') {
     return 'urgente'
   }
   if (faixa === 'alerta') {
@@ -38,7 +38,7 @@ export function classificarFaixaPrazo(
   }
   const restante = new Date(prazoResolucao).getTime() - new Date(agora).getTime()
   if (restante < 0) {
-    return 'estourado'
+    return 'vencido'
   }
   if (restante < HORA_MS) {
     return 'urgente'
@@ -66,7 +66,7 @@ function formatarDuracao(ms: number): string {
  * Texto legível do prazo de resolução no selo da fila e do painel do consultor.
  * Compara `prazoResolucao` com `agora` (relógio do tenant, não o do navegador).
  * Chamado inativo (resolvido/fechado) → `"—"`; senão, por exemplo:
- * `Estourado há 2h`, `Vence em 45min` (menos de 4h), `Prazo em 5h` (acima de 4h).
+ * `Vencido há 2h`, `Vence em 45min` (menos de 4h), `Prazo em 5h` (acima de 4h).
  */
 export function formatarTextoPrazoConsultor(
   prazoResolucao: string,
@@ -79,7 +79,7 @@ export function formatarTextoPrazoConsultor(
   const restante = new Date(prazoResolucao).getTime() - new Date(agora).getTime()
   const duracao = formatarDuracao(restante)
   if (restante < 0) {
-    return `Estourado há ${duracao}`
+    return `Vencido há ${duracao}`
   }
   if (restante < HORA_MS) {
     return `Vence em ${duracao}`
