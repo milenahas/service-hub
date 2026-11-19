@@ -6,7 +6,8 @@ type PropsBlocoDescricaoChamado = {
 
 /**
  * Desenha o bloco “Descrição do chamado”. O texto chega pronto. Quem
- * decide o chamado e onde o bloco entra é `PainelChamado.tsx`.
+ * decide o chamado e onde o bloco entra é `PainelChamado.tsx` e
+ * `PainelChamadoCliente.tsx`.
  */
 export function BlocoDescricaoChamado({ descricao }: PropsBlocoDescricaoChamado) {
   return (

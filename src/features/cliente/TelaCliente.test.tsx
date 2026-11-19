@@ -86,6 +86,9 @@ describe('TelaCliente', () => {
     expect(
       screen.getByRole('heading', { name: 'Porta 443 bloqueada para fornecedor' }),
     ).toBeInTheDocument()
+    expect(screen.getByLabelText('Descrição do chamado')).toHaveTextContent(
+      'Começou hoje de manhã. Já tentei reiniciar.',
+    )
     expect(
       screen.getByText('Chamado #10387 · aberto em 03/11, 09:31'),
     ).toBeInTheDocument()
@@ -243,7 +246,10 @@ describe('TelaCliente', () => {
     expect(enviar).toBeEnabled()
     fireEvent.click(enviar)
     expect(screen.getByRole('heading', { name: 'Teclado falhou' })).toBeInTheDocument()
-    expect(screen.getByText('Não digita')).toBeInTheDocument()
+    const descricao = screen.getByLabelText('Descrição do chamado')
+    expect(descricao).toHaveTextContent('Não digita')
+    expect(descricao).toHaveClass('conversa-descricao')
+    expect(screen.getByText('Não digita').closest('.balao')).toBeNull()
     expect(screen.getByText('Aguardando um consultor pegar')).toBeInTheDocument()
     expect(
       screen.getByText('Recebemos seu chamado. Um consultor vai assumir em breve.'),
@@ -255,6 +261,10 @@ describe('TelaCliente', () => {
     expect(criado?.status).toBe('aberto')
     expect(criado?.prioridade).toBe('media')
     expect(criado?.responsavel_id).toBeNull()
+    expect(criado?.descricao).toBe('Não digita')
+    expect(
+      useStore.getState().tenant!.mensagens.some((mensagem) => mensagem.corpo === 'Não digita'),
+    ).toBe(false)
   })
 
   it('cancelar a abertura volta ao detalhe anterior', () => {

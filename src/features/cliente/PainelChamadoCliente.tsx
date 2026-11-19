@@ -8,6 +8,7 @@ import {
 } from '../../dominio/mensagem-campos.ts'
 import { formatarRotuloStatus } from '../../dominio/rotulo-status.ts'
 import { BalaoMensagem } from '../chamados/BalaoMensagem.tsx'
+import { BlocoDescricaoChamado } from '../chamados/BlocoDescricaoChamado.tsx'
 import { linhaTempoPublicaDoChamado } from '../chamados/regras/linha-tempo-conversa.ts'
 import type { TipoVisualBalao } from '../chamados/regras/tipo-visual-balao.ts'
 import { Selo } from '../../shared/components/index.ts'
@@ -49,7 +50,9 @@ function cabecalhoDaMensagem(
 
 /**
  * Desenha o detalhe do chamado: título, responsável, resposta prevista,
- * faixa, histórico público e rodapé. Rola o histórico até a última linha.
+ * faixa, descrição, histórico público e rodapé. Rola o histórico até a
+ * última linha. A descrição entra como card no topo da conversa — o
+ * mesmo bloco de `BlocoDescricaoChamado.tsx` — e não vira balão.
  * Não escolhe o chamado. Mensagem e reabertura sobem para `TelaCliente.tsx`.
  * A faixa vem de `faixa-etapa-cliente.ts`, o prazo de `texto-prazo-cliente.ts`,
  * o lado do balão de `tipo-visual-balao-cliente.ts` e o rodapé de
@@ -134,11 +137,10 @@ export function PainelChamadoCliente({
       <div
         ref={threadRef}
         className="painel-chamado-cliente__thread"
-        role="log"
-        aria-live="polite"
         aria-labelledby="rotulo-historico"
       >
-        <div className="conversa">
+        <BlocoDescricaoChamado descricao={chamado.descricao} />
+        <div className="conversa" role="log" aria-live="polite">
           {linhas.map((mensagem) => {
             const tipo = tipoVisualBalaoCliente(mensagem.autor_id, usuario.id)
             return (

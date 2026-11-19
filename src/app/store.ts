@@ -192,31 +192,21 @@ export const useStore = create<EstadoStore>((set, get) => ({
     if (!tituloLimpo || !descricaoLimpa) return null
     const { usuarioLogado, tenant, aplicarEvento: aplicar } = get()
     if (!usuarioLogado || !tenant) return null
-    const abertura = montarAberturaChamadoCliente(
+    const chamado = montarAberturaChamadoCliente(
       tenant,
       usuarioLogado.id,
       tituloLimpo,
       descricaoLimpa,
-      {
-        chamadoId: criarIdEvento(),
-        mensagemId: criarIdEvento(),
-      },
+      criarIdEvento(),
     )
-    if (!abertura) return null
-    const agora = agoraDoTenant(tenant)
+    if (!chamado) return null
     aplicar({
       id: criarIdEvento(),
       tipo: 'chamado.aberto',
-      ocorrido_em: agora,
-      payload: abertura.chamado,
+      ocorrido_em: agoraDoTenant(tenant),
+      payload: chamado,
     })
-    aplicar({
-      id: criarIdEvento(),
-      tipo: 'mensagem.adicionada',
-      ocorrido_em: agora,
-      payload: abertura.mensagem,
-    })
-    return abertura.chamado.id
+    return chamado.id
   },
 
   iniciarSimulacaoConsultor: () => {

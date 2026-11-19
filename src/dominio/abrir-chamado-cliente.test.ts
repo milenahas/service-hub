@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest'
 import type { Chamado, TenantSessao } from './snapshot.ts'
 import { montarAberturaChamadoCliente } from './abrir-chamado-cliente.ts'
 
-const ids = { chamadoId: 'novo-id', mensagemId: 'msg-id' }
-
 const chamadoExistente: Chamado = {
   id: 'antigo',
   numero: 40,
@@ -51,16 +49,15 @@ function tenantBase(parcial: Partial<TenantSessao> = {}): TenantSessao {
 
 describe('montarAberturaChamadoCliente', () => {
   it('abre sem dono, prioridade média, no grupo Infraestrutura e com número seguinte', () => {
-    const abertura = montarAberturaChamadoCliente(
+    const chamado = montarAberturaChamadoCliente(
       tenantBase(),
       'leandro',
       '  Teclado falhou  ',
       '  Não digita  ',
-      ids,
-    )
+      'novo-id',
+    )!
 
-    expect(abertura).not.toBeNull()
-    const chamado = abertura!.chamado
+    expect(chamado.id).toBe('novo-id')
     expect(chamado.status).toBe('aberto')
     expect(chamado.prioridade).toBe('media')
     expect(chamado.responsavel_id).toBeNull()
@@ -76,31 +73,23 @@ describe('montarAberturaChamadoCliente', () => {
     expect(chamado.prazo_primeira_resposta).toBe('2026-11-03T21:00:00.000Z')
     expect(chamado.prazo_resolucao).toBe('2026-11-04T13:00:00.000Z')
     expect(chamado.sla_pausado).toBe(false)
-    expect(abertura!.mensagem).toEqual({
-      id: 'msg-id',
-      chamado_id: 'novo-id',
-      autor_id: 'leandro',
-      corpo: 'Não digita',
-      criado_em: '2026-11-03T13:00:00Z',
-      interna: false,
-    })
   })
 
   it('começa no número 1 quando ainda não há chamados', () => {
-    const abertura = montarAberturaChamadoCliente(
+    const chamado = montarAberturaChamadoCliente(
       tenantBase({ chamados: [] }),
       'leandro',
       'Primeiro',
       'Descrição',
-      ids,
+      'novo-id',
     )
 
-    expect(abertura!.chamado.numero).toBe(1)
+    expect(chamado!.numero).toBe(1)
   })
 
   it('não monta com texto vazio', () => {
     expect(
-      montarAberturaChamadoCliente(tenantBase(), 'leandro', '   ', 'Algo', ids),
+      montarAberturaChamadoCliente(tenantBase(), 'leandro', '   ', 'Algo', 'novo-id'),
     ).toBeNull()
   })
 
@@ -110,7 +99,7 @@ describe('montarAberturaChamadoCliente', () => {
     })
 
     expect(
-      montarAberturaChamadoCliente(tenant, 'leandro', 'Assunto', 'Descrição', ids),
+      montarAberturaChamadoCliente(tenant, 'leandro', 'Assunto', 'Descrição', 'novo-id'),
     ).toBeNull()
   })
 })

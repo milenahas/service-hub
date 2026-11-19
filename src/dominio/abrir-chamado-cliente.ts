@@ -1,22 +1,13 @@
-import type { Chamado, Mensagem, TenantSessao } from './snapshot.ts'
+import type { Chamado, TenantSessao } from './snapshot.ts'
 
 const NOME_GRUPO_INFRAESTRUTURA = 'Infraestrutura'
 const PRIORIDADE_ABERTURA = 'media'
 const HORA_MS = 60 * 60 * 1000
 
-export type IdsAberturaChamado = {
-  chamadoId: string
-  mensagemId: string
-}
-
-export type AberturaChamadoCliente = {
-  chamado: Chamado
-  mensagem: Mensagem
-}
-
 /**
- * Monta o chamado novo e a primeira mensagem pública do cliente.
- * Não aplica evento: a store emite `chamado.aberto` e `mensagem.adicionada`.
+ * Monta o chamado novo do cliente. A descrição fica no chamado — o mesmo
+ * texto que o card do topo da conversa lê. Não cria mensagem.
+ * Não aplica evento: a store emite `chamado.aberto`.
  * Sem grupo Infraestrutura, categoria desse grupo ou SLA `media`, devolve null.
  */
 export function montarAberturaChamadoCliente(
@@ -24,8 +15,8 @@ export function montarAberturaChamadoCliente(
   solicitanteId: string,
   titulo: string,
   descricao: string,
-  ids: IdsAberturaChamado,
-): AberturaChamadoCliente | null {
+  chamadoId: string,
+): Chamado | null {
   const tituloLimpo = titulo.trim()
   const descricaoLimpa = descricao.trim()
   if (!tituloLimpo || !descricaoLimpa) {
@@ -46,8 +37,8 @@ export function montarAberturaChamadoCliente(
     0,
   ) + 1
 
-  const chamado: Chamado = {
-    id: ids.chamadoId,
+  return {
+    id: chamadoId,
     numero,
     titulo: tituloLimpo,
     descricao: descricaoLimpa,
@@ -70,15 +61,4 @@ export function montarAberturaChamadoCliente(
     resolvido_em: null,
     fechado_em: null,
   }
-
-  const mensagem: Mensagem = {
-    id: ids.mensagemId,
-    chamado_id: chamado.id,
-    autor_id: solicitanteId,
-    corpo: descricaoLimpa,
-    criado_em: agora,
-    interna: false,
-  }
-
-  return { chamado, mensagem }
 }
