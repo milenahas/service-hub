@@ -117,6 +117,10 @@ Com a tela do gestor aberta, a equipe recebe as mesmas novidades nos dois grupos
 
 Sair da tela interrompe esses disparos. Não há marcador de não lido: contagens, listas e conversa acompanham o que já está na sessão.
 
+## Em tela estreita
+
+Login, cliente, consultor e gestor se adaptam a uma viewport de celular.
+
 ## Status e prazo
 
 Um chamado percorre estes status:
