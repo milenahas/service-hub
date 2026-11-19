@@ -287,12 +287,45 @@
 }
 
 @media (max-width: 720px) {
+  .tela-cliente {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
   .tela-cliente__grade {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .coluna-meus-chamados__lista {
+    max-height: 40vh;
   }
 
   .painel-chamado-cliente__fatos {
     grid-template-columns: 1fr;
+  }
+
+  .painel-chamado-cliente:not(.form-novo-chamado) {
+    overflow: visible;
+  }
+
+  .painel-chamado-cliente__resumo {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex-shrink: 0;
+    background: inherit;
+  }
+
+  .painel-chamado-cliente__thread {
+    flex: 1 1 auto;
+    min-height: 40vh;
+    max-height: 55vh;
+    overflow: auto;
+  }
+
+  .rodape-cliente {
+    flex-shrink: 0;
   }
 }

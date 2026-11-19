@@ -159,6 +159,23 @@
   gap: 0;
 }
 
+.painel-equipe__tabela {
+  --equipe-consultor: minmax(0, 1.6fr);
+  --equipe-situacao: 140px;
+  --equipe-ativos: 110px;
+  --equipe-risco: 90px;
+  --equipe-ocioso: 110px;
+  --equipe-acoes: 130px;
+}
+
+.tabela-chamados-gestor__grade {
+  --chamados-chamado: minmax(0, 1.8fr);
+  --chamados-prazo: minmax(240px, max-content);
+  --chamados-status: minmax(170px, max-content);
+  --chamados-responsavel: minmax(200px, 1fr);
+  --chamados-acoes: auto;
+}
+
 .painel-equipe__cabecalho,
 .painel-equipe__linha,
 .tabela-chamados-gestor__cabecalho,
@@ -172,12 +189,23 @@
 
 .painel-equipe__cabecalho,
 .painel-equipe__linha {
-  grid-template-columns: minmax(0, 1.6fr) 140px 110px 90px 110px 130px;
+  grid-template-columns:
+    var(--equipe-consultor)
+    var(--equipe-situacao)
+    var(--equipe-ativos)
+    var(--equipe-risco)
+    var(--equipe-ocioso)
+    var(--equipe-acoes);
 }
 
 .tabela-chamados-gestor__cabecalho,
 .tabela-chamados-gestor__linha {
-  grid-template-columns: minmax(0, 1.8fr) minmax(240px, max-content) minmax(170px, max-content) minmax(200px, 1fr) auto;
+  grid-template-columns:
+    var(--chamados-chamado)
+    var(--chamados-prazo)
+    var(--chamados-status)
+    var(--chamados-responsavel)
+    var(--chamados-acoes);
 }
 
 .painel-equipe__cabecalho [role='columnheader'],
@@ -420,4 +448,38 @@
 
 .painel-conversa-gestor__notas > .botao {
   margin-top: 12px;
+}
+
+@media (max-width: 720px) {
+  .tela-gestor__conteudo,
+  .cartao-gestor {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .painel-equipe__tabela,
+  .tabela-chamados-gestor__grade {
+    overflow-x: auto;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .painel-equipe__tabela {
+    --equipe-consultor: 160px;
+  }
+
+  .tabela-chamados-gestor__grade {
+    --chamados-chamado: 180px;
+    --chamados-prazo: 240px;
+    --chamados-status: 170px;
+    --chamados-responsavel: 200px;
+    --chamados-acoes: 110px;
+  }
+
+  .painel-equipe__cabecalho,
+  .painel-equipe__linha,
+  .tabela-chamados-gestor__cabecalho,
+  .tabela-chamados-gestor__linha {
+    min-width: max-content;
+  }
 }

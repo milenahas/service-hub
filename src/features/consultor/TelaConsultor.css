@@ -352,3 +352,67 @@
 .painel-notas > .botao {
   margin-top: 12px;
 }
+
+@media (max-width: 720px) {
+  .tela-consultor__grade,
+  .tela-consultor__grade--com-notas {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-width: 0;
+  }
+
+  .coluna-fila__lista {
+    max-height: 40vh;
+  }
+
+  .coluna-fila__ferramentas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .coluna-fila__ferramentas > .campo:first-child,
+  .coluna-fila__ferramentas > .campo:nth-child(2) {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .painel-chamado {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .painel-chamado__cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex-shrink: 0;
+    background: var(--cor-superficie);
+  }
+
+  .painel-chamado__topo {
+    flex-direction: column;
+  }
+
+  .painel-chamado__acoes {
+    justify-content: flex-start;
+  }
+
+  .painel-chamado__conversa {
+    flex: 1 1 auto;
+    min-height: 40vh;
+    max-height: 55vh;
+    overflow: auto;
+  }
+
+  .rodape-resposta {
+    flex-shrink: 0;
+  }
+
+  .painel-notas {
+    max-height: 50vh;
+  }
+
+  .painel-notas__lista {
+    min-height: 0;
+  }
+}

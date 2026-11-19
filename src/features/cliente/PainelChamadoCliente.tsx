@@ -84,47 +84,49 @@ export function PainelChamadoCliente({
 
   return (
     <section className={classePainel}>
-      <header className="painel-chamado-cliente__topo">
-        <div className="painel-chamado-cliente__identificacao">
-          <h1 className="painel-chamado-cliente__titulo">{chamado.titulo}</h1>
-          <p className="painel-chamado-cliente__meta">
-            Chamado #{chamado.numero} · aberto em{' '}
-            {formatarDataHoraUsuario(chamado.aberto_em, usuario)}
-          </p>
-        </div>
-        <span className="painel-chamado-cliente__selo">
-          <Selo apresentacao="status-preenchido" status={chamado.status}>
-            {formatarRotuloStatus(chamado.status)}
-          </Selo>
-        </span>
-      </header>
+      <div className="painel-chamado-cliente__resumo">
+        <header className="painel-chamado-cliente__topo">
+          <div className="painel-chamado-cliente__identificacao">
+            <h1 className="painel-chamado-cliente__titulo">{chamado.titulo}</h1>
+            <p className="painel-chamado-cliente__meta">
+              Chamado #{chamado.numero} · aberto em{' '}
+              {formatarDataHoraUsuario(chamado.aberto_em, usuario)}
+            </p>
+          </div>
+          <span className="painel-chamado-cliente__selo">
+            <Selo apresentacao="status-preenchido" status={chamado.status}>
+              {formatarRotuloStatus(chamado.status)}
+            </Selo>
+          </span>
+        </header>
 
-      <div className="painel-chamado-cliente__fatos">
-        <div className="painel-chamado-cliente__fato">
-          <p className="painel-chamado-cliente__fato-rotulo">Responsável</p>
-          <p className="painel-chamado-cliente__fato-valor">
-            {nomeResponsavel ?? 'Aguardando um consultor pegar'}
-          </p>
+        <div className="painel-chamado-cliente__fatos">
+          <div className="painel-chamado-cliente__fato">
+            <p className="painel-chamado-cliente__fato-rotulo">Responsável</p>
+            <p className="painel-chamado-cliente__fato-valor">
+              {nomeResponsavel ?? 'Aguardando um consultor pegar'}
+            </p>
+          </div>
+          <div className="painel-chamado-cliente__fato">
+            <p className="painel-chamado-cliente__fato-rotulo">Resposta prevista</p>
+            <p className="painel-chamado-cliente__fato-valor">
+              {textoRespostaPrevistaCliente(
+                chamado.status,
+                chamado.prazo_primeira_resposta,
+                tenant.meta.agora,
+                usuario,
+              )}
+            </p>
+          </div>
         </div>
-        <div className="painel-chamado-cliente__fato">
-          <p className="painel-chamado-cliente__fato-rotulo">Resposta prevista</p>
-          <p className="painel-chamado-cliente__fato-valor">
-            {textoRespostaPrevistaCliente(
-              chamado.status,
-              chamado.prazo_primeira_resposta,
-              tenant.meta.agora,
-              usuario,
-            )}
-          </p>
-        </div>
+
+        {faixa && (
+          <div className={`faixa-etapa faixa-etapa--${faixa.variante}`}>
+            <span className="faixa-etapa__ponto" aria-hidden="true" />
+            <span>{faixa.frase}</span>
+          </div>
+        )}
       </div>
-
-      {faixa && (
-        <div className={`faixa-etapa faixa-etapa--${faixa.variante}`}>
-          <span className="faixa-etapa__ponto" aria-hidden="true" />
-          <span>{faixa.frase}</span>
-        </div>
-      )}
 
       <p id="rotulo-historico" className="painel-chamado-cliente__historico-rotulo">
         HISTÓRICO
