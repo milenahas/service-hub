@@ -1,19 +1,32 @@
 import type { Chamado } from '../../dominio/snapshot.ts'
 
 /**
- * Ordena os chamados do cliente: mais recentes primeiro por `aberto_em`,
- * e `numero` decrescente no empate. Não desenha a lista — quem pinta é
- * `ColunaMeusChamados.tsx`. A seleção fica em `TelaCliente.tsx`.
- * O recorte por texto fica em `filtrarChamadosCliente`, neste arquivo.
+ * Ordena os chamados do cliente: quem não está `fechado` vem primeiro
+ * (reabrir sobe o chamado para esse bloco); dentro de cada bloco, mais
+ * recentes por `aberto_em`, e `numero` decrescente no empate. Não desenha
+ * a lista — quem pinta é `ColunaMeusChamados.tsx`. A seleção fica em
+ * `TelaCliente.tsx`. O recorte por texto fica em `filtrarChamadosCliente`,
+ * neste arquivo.
  */
 export function ordenarChamadosCliente(chamados: Chamado[]): Chamado[] {
   return [...chamados].sort((a, b) => {
+    const porFechado = pesoFechado(a) - pesoFechado(b)
+    if (porFechado !== 0) {
+      return porFechado
+    }
     const porData = b.aberto_em.localeCompare(a.aberto_em)
     if (porData !== 0) {
       return porData
     }
     return b.numero - a.numero
   })
+}
+
+function pesoFechado(chamado: Chamado): number {
+  if (chamado.status === 'fechado') {
+    return 1
+  }
+  return 0
 }
 
 function textosBusca(chamado: Chamado): string[] {

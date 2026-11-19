@@ -179,21 +179,23 @@
 }
 
 .fila-item__titulo {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
+  display: block;
+  width: 100%;
+  min-width: 0;
   font-weight: 600;
   font-size: 14px;
   color: var(--cor-texto-principal);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .fila-item__nao-lido {
-  flex-shrink: 0;
+  display: inline-block;
   width: 7px;
   height: 7px;
+  margin-right: 0.35rem;
+  vertical-align: middle;
   border-radius: 50%;
   background: var(--cor-primaria);
 }
@@ -409,7 +411,7 @@
   }
 
   .painel-notas {
-    max-height: 50vh;
+    max-height: 100vh;
   }
 
   .painel-notas__lista {

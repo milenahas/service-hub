@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import type { StatusChamado } from '../../dominio/chamado.ts'
 import { chamadoAtivo } from '../../dominio/prazo.ts'
-import { Botao, CampoTexto, CampoTextarea } from '../../shared/components/index.ts'
+import { Botao, CampoTexto } from '../../shared/components/index.ts'
 
 type PropsRodapeMensagemCliente = {
   status: StatusChamado
@@ -19,8 +19,8 @@ function textoConclusao(status: StatusChamado): string {
 /**
  * Desenha o rodapé do chamado: caixa de mensagem nos ativos, ou o texto
  * de conclusão com o formulário de reabertura. Guarda o texto digitado e
- * se o motivo está aberto. Enviar e reabrir sobem para
- * `PainelChamadoCliente.tsx`. Não grava mensagem nem status.
+ * se o motivo está aberto. Enviar (botão ou Enter no campo) e reabrir
+ * sobem para `PainelChamadoCliente.tsx`. Não grava mensagem nem status.
  */
 export function RodapeMensagemCliente({
   status,
@@ -32,7 +32,8 @@ export function RodapeMensagemCliente({
   const [reaberturaAberta, setReaberturaAberta] = useState(false)
   const ativo = chamadoAtivo(status)
 
-  function enviar() {
+  function enviar(evento: SubmitEvent<HTMLFormElement>) {
+    evento.preventDefault()
     const corpo = texto.trim()
     if (!corpo) return
     aoEnviar(corpo)
@@ -51,11 +52,10 @@ export function RodapeMensagemCliente({
   return (
     <footer className="rodape-cliente">
       {ativo && (
-        <div>
-          <CampoTextarea
+        <form className="rodape-cliente__form" onSubmit={enviar}>
+          <CampoTexto
             id="mensagem-cliente"
             rotulo="Mensagem"
-            rows={3}
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
             placeholder="Escreva uma mensagem…"
@@ -63,14 +63,13 @@ export function RodapeMensagemCliente({
           <div className="rodape-cliente__acoes">
             <Botao
               variante="primario"
-              type="button"
+              type="submit"
               disabled={!texto.trim()}
-              onClick={enviar}
             >
               Enviar
             </Botao>
           </div>
-        </div>
+        </form>
       )}
       {!ativo && !reaberturaAberta && (
         <div className="rodape-cliente__concluido">

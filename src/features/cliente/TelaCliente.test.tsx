@@ -156,6 +156,7 @@ describe('TelaCliente', () => {
     )
     const enviar = screen.getByRole('button', { name: 'Enviar' })
     const campo = screen.getByLabelText('Mensagem')
+    expect(campo.tagName).toBe('INPUT')
     expect(enviar).toBeDisabled()
     fireEvent.change(campo, { target: { value: '   ' } })
     expect(enviar).toBeDisabled()
@@ -169,6 +170,31 @@ describe('TelaCliente', () => {
       .tenant!.mensagens.find((mensagem) => mensagem.corpo === 'Pode verificar de novo?')
     expect(gravada?.interna).toBe(false)
     expect(gravada?.autor_id).toBe(leandro.id)
+  })
+
+  it('Enter no campo envia a mensagem e esvazia a caixa', () => {
+    montar()
+    fireEvent.click(
+      screen.getByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    )
+    const campo = screen.getByLabelText('Mensagem')
+    fireEvent.change(campo, { target: { value: 'Pelo Enter' } })
+    fireEvent.submit(campo.closest('form')!)
+    expect(screen.getByText('Pelo Enter')).toBeInTheDocument()
+    expect(campo).toHaveValue('')
+    expect(campo).toHaveFocus()
+  })
+
+  it('Enter com mensagem em branco não grava', () => {
+    montar()
+    fireEvent.click(
+      screen.getByRole('button', { name: /Porta 443 bloqueada para fornecedor/ }),
+    )
+    const campo = screen.getByLabelText('Mensagem')
+    const antes = useStore.getState().tenant!.mensagens.length
+    fireEvent.change(campo, { target: { value: '   ' } })
+    fireEvent.submit(campo.closest('form')!)
+    expect(useStore.getState().tenant!.mensagens.length).toBe(antes)
   })
 
   it('descarta o texto não enviado ao trocar de chamado e ao abrir o formulário', () => {

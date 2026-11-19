@@ -244,7 +244,7 @@ describe('TelaGestor', () => {
     spy.mockRestore()
   })
 
-  it('salvar nota desabilita com textarea vazio', () => {
+  it('salvar nota desabilita com o campo vazio', () => {
     montar()
     fireEvent.click(screen.getAllByRole('button', { name: 'Ver chamados' })[0]!)
     const conversa = screen
@@ -252,8 +252,25 @@ describe('TelaGestor', () => {
       .find((botao) => (botao as HTMLButtonElement).disabled === false)
     expect(conversa).toBeDefined()
     fireEvent.click(conversa!)
+    const campo = screen.getByLabelText('Nova nota interna')
     const salvar = screen.getByRole('button', { name: 'Salvar nota interna' })
+    expect(campo.tagName).toBe('TEXTAREA')
     expect(salvar).toBeDisabled()
+  })
+
+  it('o botão salva a nota interna e esvazia a caixa', () => {
+    montar()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Ver chamados' })[0]!)
+    const conversa = screen
+      .getAllByRole('button', { name: 'Conversa' })
+      .find((botao) => (botao as HTMLButtonElement).disabled === false)
+    expect(conversa).toBeDefined()
+    fireEvent.click(conversa!)
+    const campo = screen.getByLabelText('Nova nota interna')
+    fireEvent.change(campo, { target: { value: 'Orientação para a equipe' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Salvar nota interna' }))
+    expect(screen.getByText('Orientação para a equipe')).toBeInTheDocument()
+    expect(campo).toHaveValue('')
   })
 
   it('busca zzz exibe vazio na equipe', () => {

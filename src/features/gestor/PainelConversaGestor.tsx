@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import type { Chamado, TenantSessao } from '../../dominio/snapshot.ts'
 import type { Usuario } from '../../dominio/tipos.ts'
 import {
@@ -31,7 +31,8 @@ type PropsPainelConversaGestor = {
 /**
  * Desenha a conversa do gestor: cabeçalho do chamado, redistribuição,
  * thread só leitura e o bloco de notas. Guarda o texto da nota ainda
- * não salva. Não grava no tenant — atribuição e nota sobem para
+ * não salva. O botão salva a nota. Não grava no
+ * tenant — atribuição e nota sobem para
  * `TelaGestor.tsx`. A thread fica em `ListaConversa.tsx`, cada nota em
  * `ItemNotaInterna.tsx` e o recorte das mensagens em
  * `mensagens-chamado.ts`. As opções de responsável vêm de
@@ -69,7 +70,8 @@ export function PainelConversaGestor({
     chamado.responsavel_id,
   )
 
-  function salvarNota() {
+  function salvarNota(evento: SubmitEvent<HTMLFormElement>) {
+    evento.preventDefault()
     const corpo = textoNota.trim()
     if (!corpo) return
     aoSalvarNota(corpo)
@@ -151,23 +153,24 @@ export function PainelConversaGestor({
               <ItemNotaInterna key={nota.id} nota={nota} />
             ))}
           </div>
-          <CampoTextarea
-            id="nota-gestor"
-            rotulo="Nova nota interna"
-            value={textoNota}
-            onChange={(e) => setTextoNota(e.target.value)}
-            placeholder="Orientar a equipe..."
-            rows={4}
-          />
-          <Botao
-            variante="secundario"
-            bloco
-            type="button"
-            disabled={!textoNota.trim()}
-            onClick={salvarNota}
-          >
-            Salvar nota interna
-          </Botao>
+          <form className="painel-conversa-gestor__form-nota" onSubmit={salvarNota}>
+            <CampoTextarea
+              id="nota-gestor"
+              rotulo="Nova nota interna"
+              value={textoNota}
+              onChange={(e) => setTextoNota(e.target.value)}
+              placeholder="Orientar a equipe..."
+              rows={4}
+            />
+            <Botao
+              variante="secundario"
+              bloco
+              type="submit"
+              disabled={!textoNota.trim()}
+            >
+              Salvar nota interna
+            </Botao>
+          </form>
         </aside>
       </div>
     </>

@@ -228,7 +228,7 @@ export function ColunaFila({
           rotulo="Buscar chamado"
           value={busca}
           onChange={(e) => aoMudarBusca(e.target.value)}
-          placeholder="Buscar chamado"
+          placeholder="Pesquise pelo nome, número ou responsável"
         />
         {aba !== 'concluidos' && (
           <CampoSelect

@@ -446,7 +446,11 @@
   margin: 0;
 }
 
-.painel-conversa-gestor__notas > .botao {
+.painel-conversa-gestor__form-nota {
+  margin: 0;
+}
+
+.painel-conversa-gestor__form-nota .botao {
   margin-top: 12px;
 }
 

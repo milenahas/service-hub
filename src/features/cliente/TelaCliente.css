@@ -255,6 +255,10 @@
   padding-top: 16px;
 }
 
+.rodape-cliente__form {
+  margin: 0;
+}
+
 .rodape-cliente__acoes {
   display: flex;
   justify-content: flex-end;

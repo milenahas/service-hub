@@ -29,6 +29,10 @@ function chamado(numero: number, abertoEm: string): Chamado {
   }
 }
 
+function chamadoFechado(numero: number, abertoEm: string): Chamado {
+  return { ...chamado(numero, abertoEm), status: 'fechado' }
+}
+
 describe('ordenarChamadosCliente', () => {
   it('coloca o mais novo primeiro e, na mesma data, o número maior', () => {
     const lista = [
@@ -41,6 +45,28 @@ describe('ordenarChamadosCliente', () => {
       5, 2, 1,
     ])
     expect(lista.map((item) => item.numero)).toEqual([1, 2, 5])
+  })
+
+  it('coloca reaberto acima dos fechados, mesmo com abertura mais antiga', () => {
+    const reaberto = {
+      ...chamado(3, '2026-10-01T00:00:00Z'),
+      status: 'aberto' as const,
+    }
+    const resolvido = {
+      ...chamado(6, '2026-09-01T00:00:00Z'),
+      status: 'resolvido' as const,
+    }
+    const lista = [
+      chamado(1, '2026-11-01T00:00:00Z'),
+      chamadoFechado(2, '2026-11-05T00:00:00Z'),
+      reaberto,
+      chamadoFechado(4, '2026-11-04T00:00:00Z'),
+      resolvido,
+    ]
+
+    expect(ordenarChamadosCliente(lista).map((item) => item.numero)).toEqual([
+      1, 3, 6, 2, 4,
+    ])
   })
 })
 
